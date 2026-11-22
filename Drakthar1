@@ -1,0 +1,2109 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Drakthar — Traductor y diccionario</title>
+<link rel="icon" type="image/png" href="/Drakthar/dragon.png">
+<meta name="description" content="Descubre Drakthar, un idioma fantástico con su propio diccionario, traductor, alfabeto rúnico y gramática. Aprende palabras y explora el mundo de Drakthar.">
+<style>
+:root{--bg:#10120e;--panel:#1d211a;--gold:#d6b56d;--text:#f2eee3;--muted:#c1bba9;--line:#4c472f}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at top,#303426 0,#11130f 60%);color:var(--text);font-family:Georgia,"Times New Roman",serif}
+header{text-align:center;padding:40px 16px 26px;border-bottom:1px solid var(--line)}.rune{color:var(--gold);letter-spacing:.5em}h1{color:var(--gold);font-size:clamp(2.4rem,8vw,4.1rem);margin:12px 0;letter-spacing:.08em}header p{max-width:700px;margin:auto;line-height:1.6;color:var(--muted)}
+nav{display:flex;justify-content:center;gap:8px;flex-wrap:wrap;padding:14px;background:#151811;position:sticky;top:0;z-index:2;border-bottom:1px solid var(--line)}nav a{color:var(--gold);text-decoration:none;padding:8px 11px;border:1px solid var(--line);border-radius:20px}
+main{max-width:1000px;margin:auto;padding:20px 16px 50px}.panel{background:linear-gradient(145deg,#25291f,#191c16);border:1px solid #45432f;border-radius:14px;padding:18px;margin:14px 0}
+label{display:block;color:var(--gold);font-size:1.1rem;margin-bottom:10px}textarea,input {
+width: 100%;
+padding: 16px;
+border: 2px solid #8f2633;
+border-radius: 12px;
+color: #f5e6c8;
+background: rgba(10, 8, 12, 0.92);
+font-size: 16px;
+box-shadow: inset 0 0 15px #00000080;
+transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+textarea:focus, input:focus {
+outline: none;
+border-color: #e8b65a;
+box-shadow: 0 0 15px #e8b65a55;
+}
+}textarea{min-height:110px;resize:vertical}
+button{border:1px solid #e4c77e;background:var(--gold);color:#19190f;font-weight:bold;padding:11px 15px;border-radius:8px;cursor:pointer;font-size:.98rem;margin:8px 6px 0 0}button.secondary,.example{background:#25291f;color:var(--text);border-color:#615638}
+.result{min-height:60px;padding:15px;background:#12150f;border:1px dashed #74613a;border-radius:9px;font-size:1.3rem;overflow-wrap:anywhere}.small{font: .93rem/1.6 Arial,sans-serif;color:var(--muted)}h2{color:var(--gold);margin-top:30px}.examples{display:flex;gap:8px;flex-wrap:wrap}.example{border:1px solid #45432f;border-radius:20px;padding:8px 12px;cursor:pointer}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-top:14px}.wordcard{background:#1b1e17;border:1px solid #45432f;border-radius:9px;padding:12px}.dw{color:var(--gold);font-weight:bold;font-size:1.1rem}.dm{margin-top:4px}.count{color:var(--muted);font: .9rem Arial,sans-serif;margin-top:8px}
+.runegrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}.runeitem{text-align:center;background:#151811;border:1px solid var(--line);border-radius:8px;padding:10px}.runesymbol{font-size:2rem;color:var(--gold)}.runeletter{color:var(--muted)}
+footer{text-align:center;color:var(--muted);border-top:1px solid var(--line);padding:20px}
+body {
+  background-color: #0b0b10;
+  background-image: url('drakthar-fondo.png');
+  background-size: cover;
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: #f5f0e8;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #e8b65a;
+  text-align: center;
+  font-size: 48px;
+  text-shadow: 0 0 15px #e63946;
+}
+
+button {
+  background: #a51d2d;
+  color: white;
+  border: 1px solid #e8b65a;
+  border-radius: 8px;
+  padding: 12px 20px;
+  cursor: pointer;
+}
+
+textarea, input {
+  background: #17151c;
+  color: white;
+  border: 1px solid #e8b65a;
+  border-radius: 8px;
+  padding: 10px;
+}
+.dragon {
+  text-align: center;
+  margin: 20px auto;
+}
+
+.dragon img {
+  display: block;
+  width: 100%;
+  max-width: 650px;
+  max-height: 350px;
+  object-fit: contain;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 18px #ff0000);
+  animation: dragonGlow 2s infinite alternate;
+}
+
+@keyframes dragonGlow {
+  from {
+    filter: drop-shadow(0 0 10px #8b0000);
+  }
+  to {
+    filter: drop-shadow(0 0 30px #ff0000);
+  }
+}
+#dictionary {
+  background: rgba(15, 10, 15, 0.95);
+  border: 2px solid #c99b3b;
+  border-radius: 14px;
+  padding: 18px;
+  margin-top: 20px;
+  box-shadow: 0 0 18px #8f263355;
+  color: #f5e6c8;
+}
+
+#dictionary h2 {
+  color: #e8b65a;
+  text-align: center;
+  text-shadow: 0 0 8px #8f2633;
+}
+#dictionary input {
+border: 1px solid #c99b3b;
+border-radius: 10px;
+background: rgba(10, 8, 12, 0.95);
+color: #f5e6c8;
+}
+
+#dictionary input::placeholder {
+color: #b8a58b;
+}
+
+#dictionary button {
+background: linear-gradient(135deg, #6f1724, #a52a2a);
+color: #ffe6a6;
+border: 1px solid #c99b3b;
+border-radius: 10px;
+padding: 10px 16px;
+cursor: pointer;
+transition: transform 0.2s, box-shadow 0.2s;
+}
+
+#dictionary button {
+transform: translateY(-2px);
+box-shadow: 0 0 12px #c99b3b88;
+}
+#dictionary > * {
+transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+#dictionary li {
+list-style: none;
+margin: 10px 0;
+padding: 12px 16px;
+border: 1px solid #8f2633;
+border-left: 4px solid #c99b3b;
+border-radius: 10px;
+background: rgba(12, 9, 14, 0.9);
+color: #f5e6c8;
+transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+#dictionary li:hover {
+border-color: #e8b65a;
+box-shadow: 0 0 14px #c99b3b55;
+transform: translateY(-2px);
+}
+#search {
+width: 100%;
+padding: 14px;
+border: 2px solid #c99b3b;
+border-radius: 12px;
+background: rgba(10, 8, 12, 0.95);
+color: #f5e6c8;
+font-size: 16px;
+transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+#search:focus {
+outline: none;
+border-color: #e8b65a;
+box-shadow: 0 0 16px #c99b3b77;
+}
+
+#search::placeholder {
+color: #b8a58b;
+}
+@keyframes goldenPulse {
+0% {
+box-shadow: 0 0 4px #c99b3b22;
+}
+100% {
+box-shadow: 0 0 14px #c99b3b88;
+}
+}
+
+#dictionary li:hover {
+animation: goldenPulse 0.8s ease-in-out infinite alternate;
+}
+#diccionario .panel {
+background: rgba(12, 9, 14, 0.94);
+border: 1px solid #c99b3b;
+border-radius: 16px;
+padding: 20px;
+box-shadow: 0 0 20px #8f263344;
+}
+
+#diccionario h2 {
+color: #e8b65a;
+text-align: center;
+text-shadow: 0 0 10px #8f2633;
+}
+
+#dictionary .card {
+background: linear-gradient(145deg, rgba(50, 18, 24, 0.96), rgba(12, 9, 14, 0.98));
+border: 1px solid #c99b3b;
+border-radius: 12px;
+padding: 14px;
+color: #f5e6c8;
+box-shadow: 0 0 8px #00000066;
+transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+#dictionary .card:hover {
+transform: translateY(-4px);
+border-color: #ffe09a;
+box-shadow: 0 0 18px #c99b3b88;
+}
+#dictionary .wordcard {
+background: linear-gradient(145deg, rgba(65, 20, 28, 0.96), rgba(12, 9, 14, 0.98));
+border: 1px solid #c99b3b;
+border-left: 4px solid #c99b3b;
+border-radius: 12px;
+padding: 16px;
+color: #f5e6c8;
+box-shadow: 0 0 8px #00000066;
+transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+#dictionary .wordcard:hover {
+transform: translateY(-4px);
+border-color: #ffe09a;
+box-shadow: 0 0 18px #c99b3b88;
+}
+
+#dictionary .dw {
+color: #e8b65a;
+font-size: 20px;
+font-weight: bold;
+text-shadow: 0 0 6px #8f263355;
+}
+
+#dictionary .dm {
+color: #f5e6c8;
+margin-top: 6px;
+}
+/* GRAMÁTICA DE DRAKTHAR */
+#gramatica {
+  margin-top: 35px;
+}
+
+#gramatica h2 {
+  color: #e8b65a;
+  text-align: center;
+  text-shadow: 0 0 8px #8f2633;
+}
+
+#gramatica .panel {
+  background: linear-gradient(
+    145deg,
+    rgba(65, 20, 28, 0.96),
+    rgba(12, 9, 14, 0.98)
+  );
+  border: 2px solid #c99b3b;
+  border-radius: 14px;
+  padding: 20px;
+  color: #f5e6c8;
+  box-shadow: 0 0 18px #8f263355;
+}
+
+#gramatica h3 {
+  color: #e8b65a;
+  border-bottom: 1px solid #c99b3b;
+  padding-bottom: 6px;
+  margin-top: 22px;
+}
+
+#gramatica p {
+  line-height: 1.6;
+}
+
+#gramatica strong {
+  color: #ffd980;
+}</style></head><body>
+<header><div class="rune">ᚦ · ᚨ · ᚱ · ᚨ · ᚲ</div><h1>🐉 DRAKTHAR 🐉</h1>
+<p class="subtitle">EL IDIOMA DE LOS DRAGONES</p>
+<div class="dragon">
+  <img src="dragon-drakthar.png" alt="Dragón legendario de Drakthar">
+</div>
+<p>El idioma antiguo de una civilización perdida. Traduce frases, busca palabras, escucha la pronunciación y aprende con retos.</p></header>
+<nav><a href="#traductor">Traductor</a><a href="#diccionario">Diccionario</a><a href="#alfabeto">Alfabeto rúnico</a><a href="#reto">Reto</a></nav>
+<main>
+<section id="traductor"><h2>⚔️ Traductor</h2><div class="panel"><label for="input">Español o Drakthar</label><textarea id="input" placeholder="Escribe aquí una frase..."></textarea><button id="toDrak">🇪🇸 → 🗿 Traducir a Drakthar</button><button id="toEs" class="secondary">🗿 → 🇪🇸 Traducir al español</button><button id="clear" class="secondary">Borrar</button></div>
+<div class="panel"><label>Resultado</label><div id="output" class="result" aria-live="polite">Tu traducción aparecerá aquí…</div><button id="copy" class="secondary">Copiar</button><button id="speak" class="secondary">🔊 Escuchar pronunciación</button><div id="status" class="small"></div></div></section>
+<h2>🔥 Frases de ejemplo</h2><div class="examples"><button class="example" data-text="Hola amigo">Hola amigo</button><button class="example" data-text="Vamos juntos">Vamos juntos</button><button class="example" data-text="Viene el profesor">Viene el profesor</button><button class="example" data-text="Silencio">Silencio</button><button class="example" data-text="Nuestra fuerza">Nuestra fuerza</button><button class="example" data-text="Yo hablo">Yo hablo</button><button class="example" data-text="La luna y las estrellas">La luna y las estrellas</button><button class="example" data-text="¿Dónde está mi amigo?">¿Dónde está mi amigo?</button></div>
+<section id="diccionario"><h2>📚 Diccionario ampliado</h2><div class="panel"><input id="search" type="search" placeholder="Busca en español o Drakthar…"><div class="count" id="count"></div><div class="grid" id="dictionary"></div></div></section>
+<section id="alfabeto"><h2>🗿 Alfabeto rúnico decorativo</h2><div class="panel"><p class="small">Estos símbolos son una capa visual inspirada en runas; no representan un sistema histórico propio ni una escritura fonética oficial del Drakthar.</p><div class="runegrid" id="runegrid"></div><label for="runeInput" style="margin-top:18px">Escribe una palabra para verla en símbolos</label><input id="runeInput" placeholder="Ejemplo: DRAKTHAR"><div class="result" id="runeOutput" style="margin-top:10px">ᛞ ᚱ ᚨ ᚲ ᛏ ᚺ ᚨ ᚱ</div></div></section>
+<section id="reto"><h2>🏆 Reto de aprendizaje</h2><div class="panel"><p id="quizQuestion">¿Qué significa “Tharek”?</p><div id="quizChoices"></div><div id="quizResult" class="small" aria-live="polite"></div><button id="nextQuiz" class="secondary">Siguiente reto</button></div></section>
+<div class="panel small"><strong>Nota del escriba:</strong> Drakthar es un idioma ficticio creado para divertirse. El traductor usa un diccionario, no una inteligencia artificial: las frases largas pueden sonar poco naturales y las palabras que no reconoce se dejan sin traducir. Puedes ampliar el vocabulario editando el archivo.</div>
+</main><footer>DRAKTHAR · Traductor, diccionario y academia · Edición experimental</footer>
+<script>
+const dict={"yo": "Ar", "tú": "Tar", "tu": "Tar", "él": "Uth", "ella": "Uth", "nosotros": "Arak", "nosotras": "Arak", "ellos": "Uthar", "ellas": "Uthar", "amigo": "Daran", "amiga": "Daran", "amigos": "Daran", "amigas": "Daran", "enemigo": "Khar", "familia": "Mareth", "hermano": "Darek", "hermana": "Darek", "subnormal": "Naktun", "madre": "Ama", "padre": "Atho", "hola": "Tharek", "adiós": "Vardak", "adios": "Vardak", "gracias": "Tham", "perdón": "Nareth", "perdon": "Nareth", "por": "Tharekha", "favor": "Arel", "sí": "Ahn", "si": "Ahn", "no": "Nok", "quizá": "Maren", "quizas": "Maren", "vale": "Ahn", "bien": "Akar", "mal": "Drek", "bueno": "Akar", "buena": "Akar", "malo": "Drek", "genial": "Morak", "mejor": "Varek", "profesor": "Ghor", "profesora": "Ghor", "escuela": "Drak", "salchicha": "boook", "cole": "Drak", "clase": "Kira", "recreo": "Rekra", "libro": "Tavar", "mesa": "Dorum", "silla": "Kethar", "puerta": "Uldak", "casa": "Mora", "calle": "Zaren", "ciudad": "Tharakor", "mundo": "Orath", "hablar": "Thalan", "hablo": "Thalan", "hablas": "Thalan", "habla": "Thalan", "hablamos": "Thalan", "decir": "Thalan", "digo": "Thalan", "dices": "Thalan", "mirar": "Varek", "miro": "Varek", "miras": "Varek", "mira": "Varek", "ver": "Varek", "veo": "Varek", "ves": "Varek", "venir": "Kador", "viene": "Kador", "vengo": "Kador", "ir": "Zarth", "voy": "Zarth", "vas": "Zarth", "vamos": "Zarth", "van": "Zarth", "andar": "Zarth", "correr": "Zakar", "corre": "Zakar", "esperar": "Dhor", "espera": "Dhor", "querer": "Mave", "quiero": "Mave", "quieres": "Mave", "quiere": "Mave", "tener": "Thur", "tengo": "Thur", "tienes": "Thur", "hacer": "Darak", "hago": "Darak", "haces": "Darak", "jugar": "Kavor", "juego": "Kavor", "juegas": "Kavor", "comer": "Nakar", "como": "Marei", "beber": "Othar", "dormir": "Murum", "pensar": "Karem", "saber": "Veth", "entiendo": "Veth", "entender": "Veth", "escuchar": "Thorin", "oír": "Thorin", "oir": "Thorin", "callar": "Dumak", "ahora": "Keth", "después": "Ornak", "despues": "Ornak", "antes": "Neth", "hoy": "Kethar", "mañana": "Mornek", "manana": "Mornek", "ayer": "Dareth", "siempre": "Avar", "nunca": "Nokar", "pronto": "Zakar", "tarde": "Orvek", "aquí": "Uldar", "aqui": "Uldar", "allí": "Uldareth", "alli": "Uldareth", "dentro": "Morth", "fuera": "Zerak", "arriba": "Thoran", "abajo": "Doran", "lejos": "Vareth", "cerca": "Keth", "secreto": "Tharum", "secreta": "Tharum", "rápido": "Zakar", "rapido": "Zakar", "lento": "Murek", "poder": "Morgh", "juntos": "Tharak", "junto": "Tharak", "fuerza": "Vorth", "silencio": "Dumak", "oscuridad": "Zerath", "luz": "Aural", "fuego": "Kragh", "agua": "Nara", "tierra": "Dorum", "aire": "Vael", "piedra": "Gorath", "montaña": "Thoran", "mar": "Othar", "río": "Narek", "rio": "Narek", "bosque": "Vareth", "sol": "Auron", "luna": "Mira", "estrella": "Zareth", "estrellas": "Zareth", "cielo": "Avarn", "noche": "Zerath", "día": "Akar", "dia": "Akar", "vida": "Orin", "muerte": "Morth", "qué": "Kharu", "que": "Kharu", "quién": "Kharan", "quien": "Kharan", "dónde": "Uldei", "donde": "Uldei", "cuándo": "Kethei", "cuando": "Kethei", "cómo": "Marei", "cuánto": "Kharoth", "cuanto": "Kharoth", "mi": "Arin", "mis": "Arin", "mío": "Arin", "mio": "Arin", "mía": "Arin", "mia": "Arin", "tuyo": "Tarin", "tuya": "Tarin", "su": "Uthin", "nuestro": "Arak", "nuestra": "Arak", "nuestros": "Arak", "nuestras": "Arak", "este": "Keth", "esta": "Ketha", "esto": "Kethum", "ese": "Neth", "esa": "Netha", "eso": "Nethum", "uno": "Unar", "dos": "Duar", "tres": "Thar", "cuatro": "Kethar", "cinco": "Morar", "seis": "Zhar", "siete": "Avar", "ocho": "Norar", "nueve": "Vethar", "diez": "Dakar", "feliz": "Luma", "triste": "Duren", "enfadado": "Kharak", "cansado": "Murum", "hambriento": "Nakarin", "sediento": "Otharin", "grande": "Morgh", "pequeño": "Kethin", "pequeno": "Kethin", "viejo": "Dhoran", "nuevo": "Arel", "fuerte": "Vorth", "valiente": "Kharan", "misterioso": "Tharum", "bonito": "Aural", "feo": "Drek", "listo": "Lithgo", "lista": "Lithgo", "divertido": "Morak", "soy": "Ar", "eres": "Tar", "es": "Arak", "somos": "Arak", "estoy": "Arak", "estás": "Arak", "estas": "Arak", "está": "Arak", "estamos": "Arak", "hay": "Uth", "y": "e", "o": "va", "pero": "khar", "con": "thar", "sin": "nokthar", "en": "ul", "de": "ar", "a": "ul", "al": "ul", "el": "ul", "la": "ul", "los": "ul", "las": "ul", "un": "un", "una": "una", "muy": "mor", "más": "mor", "mas": "mor", "menos": "nokmor", "porque": "Tharekha", "porqué": "Tharekha", "hola,": "Tharek", "adiós,": "Vardak", "promesa": "Tharek", "amable": "Luma", "trabajo": "Darak", "tiempo": "Kethar", "nombre": "Namar", "persona": "Uthar", "personas": "Uthar", "comida": "Nakar", "música": "Thorin", "musica": "Thorin", "canción": "Thorin", "cancion": "Thorin", "deporte": "Vorthar", "fútbol": "Vorthar", "futbol": "Vorthar", "balón": "Kavor", "balon": "Kavor", "equipo": "Arak", "ganar": "Vorth", "perder": "Drek", "partido": "Kavor", "amamos": "Mave", "quiero mucho": "Mave mor", "perro": "Nickrack", "gato": "Mekrath", "caballo": "Kordak", "lobo": "Varkun", "dragón": "Dravok", "dragon": "Dravok", "pájaro": "Zireth", "pajaro": "Zireth", "pez": "Narik", "árbol": "Thoram", "arbol": "Thoram", "flor": "Lirath", "lluvia": "Nethar", "nube": "Ulvak", "idiota": "Darío", "mierda": "Barça", "polla": "Mathunt", "pene": "Puckoth", "magia": "Thazur", "universo": "Orvath", "galaxia": "Zorath", "planeta": "Keldar", "trueno": "Grathor", "relámpago": "Zirek", "relampago": "Zirek", "hielo": "Nivak", "nieve": "Nethak", "viento": "Vaelor", "tormenta": "Kraveth", "rey": "Tharok", "reina": "Tharika", "guerrero": "Varkath", "espada": "Krazor", "escudo": "Drovak", "castillo": "Mordrak", "reino": "Tharath", "tesoro": "Azhur", "poder mágico": "Thazur mor", "poder magico": "Thazur mor", "leyenda": "Ormek", "vi": "Varekak", "veía": "Varekak", "veré": "Varekur", "verás": "Varekur", "veremos": "Varekur", "hablé": "Thalanak", "hable": "Thalanak", "hablaré": "Thalanur", "hablare": "Thalanur", "fui": "Zarthak", "iré": "Zarthur", "ire": "Zarthur", "vine": "Kadorak", "vendré": "Kadorur", "vendre": "Kadorur", "corrí": "Zakarak", "corri": "Zakarak", "correré": "Zakarur", "correre": "Zakarur", "comí": "Nakarak", "comi": "Nakarak", "comeré": "Nakarur", "comere": "Nakarur", "jugué": "Kavorak", "jugue": "Kavorak", "jugaré": "Kavorur", "jugare": "Kavorur", "hice": "Darakak", "haré": "Darakur", "hare": "Darakur", "dormí": "Murumak", "dormi": "Murumak", "dormiré": "Murumur", "dormire": "Murumur", "tonto": "Martick", "tonta": "Martíc", "bruja": "Varkira", "mago": "Thazarek", "poción": "Nivareth", "monstruo": "Kharvok", "vampiro": "Morvath", "fantasma": "Ulmora", "demonio": "Drakmor", "ángel": "Auraleth", "angel": "Auraleth", "portal": "Uldrav", "dimensión": "Orvakar", "volcán": "Kraghor", "volcan": "Kraghor", "arena": "Dareth", "océano": "Otharak", "oceano": "Otharak", "isla": "Nareth", "cueva": "Gromak", "cristal": "Zirethak", "armadura": "Vorthak", "batalla": "Kharvath", "aventura": "Tharvok", "misión": "Keldrath", "magia negra": "Zerathaz", "magia blanca": "Aurathaz", "rayo": "Zirekar", "ceniza": "Krageth", "humo": "Morthak", "metal": "Droveth", "oro": "Azharek", "plata": "Nivorak", "hierro": "Gromthar", "diamante": "Zorveth", "corona": "Tharvek", "trono": "Mordeth", "príncipe": "Tharion", "princesa": "Thariel", "soldado": "Varkor", "ejército": "Varkathar", "ejercito": "Varkathar", "enemigo mortal": "Kharmorth", "aliado": "Daranth", "victoria": "Vortharok", "derrota": "Drekarok", "libertad": "Avaroth", "esperanza": "Lumarath", "miedo": "Kharum", "alegría": "Lumarek", "tristeza": "Durenak", "rabia": "Kharothak", "valentía": "Vortharek", "sabiduría": "Vetharak", "poder supremo": "Morghazar", "inmortal": "Orinath", "bosque encantado": "Varethaz", "cascada": "Narethak", "desierto": "Kharad", "pantano": "Morthun", "pradera": "Lirathor", "amanecer": "Auralon", "atardecer": "Zerathor", "amanecer rojo": "Kraghal", "llama": "Kraghar", "brisa": "Vaelith", "huracán": "Vaelkor", "huracan": "Vaelkor", "terremoto": "Gorathak", "maremoto": "Otharkar", "arcoíris": "Lumaeth", "raíz": "Thoramun", "semilla": "Lirak", "hoja": "Thoral", "roca": "Gorathun", "barro": "Dorumak", "gema": "Zirethar", "rubí": "Kragzeth", "esmeralda": "Lirzeth", "zafiro": "Nivzeth", "perla": "Othazir", "llave": "Uldarethak", "cofre": "Azhurak", "martillo": "Drovakar", "arco": "Zirethar", "flecha": "Zirekarak", "lanza": "Varkazar", "casco": "Vorthun", "botas": "Kethrak", "guantes": "Daraketh", "capa": "Morthal", "anillo": "Zorakar", "collar": "Lirum", "mapa": "Tharvek", "brújula": "Uldorin", "antorcha": "Kragluma", "hechizo": "Thazareth", "encantamiento": "Thazurak", "maldición": "Zerathun", "bendición": "Auraveth", "curación": "Lumaor", "veneno": "Kharzun", "energía": "Morveth", "destino": "Orinvek", "recuerdo": "Namarak", "sueño": "Murumeth", "pesadilla": "Zermurum", "águila": "Zirevok", "aguila": "Zirevok", "serpiente": "Kharzeth", "oso": "Gromvath", "zorro": "Varekth", "ciervo": "Liravok", "conejo": "Kethun", "tortuga": "Dorumeth", "águila real": "Ziretharok", "aguila real": "Ziretharok", "cuervo": "Morveth", "búho": "Ulvareth", "mariposa": "Liraveth", "araña": "Kharveth", "hormiga": "Darakun", "abeja": "Lumaresh", "delfín": "Othaveth", "tiburón": "Otharkh", "ballena": "Othamor", "pulpo": "Narakor", "medusa": "Nivareth", "foca": "Othalin", "selva": "Varethun", "jungla": "Varethor", "glaciar": "Nivakor", "cueva oscura": "Zermorth", "acantilado": "Goraveth", "valle": "Dorumar", "colina": "Thoraneth", "volcán dormido": "Kragmorum", "volcan dormido": "Kragmorum", "manantial": "Naraketh", "arroyo": "Narevak", "cima": "Tharveth", "raíz profunda": "Thoramorth", "tronco": "Thoraketh", "ramas": "Thoravak", "pétalo": "Liraketh", "petalo": "Liraketh", "espinas": "Kharthorn", "musgo": "Morthalun", "helecho": "Liruneth", "hierba": "Lirathun", "fruto": "Azhulir", "manzana": "Azhuneth", "pan": "Nakareth", "carne": "Nakavor", "leche": "Othalinak", "queso": "Dorumaketh", "miel": "Lumathar", "sal": "Nivorath", "azúcar": "Lumaakar", "cuchillo": "Krazeth", "tenedor": "Darakor", "cuchara": "Narakun", "vaso": "Otharek", "botella": "Othavak", "mochila": "Tharunak", "ropa": "Vorthalin", "camisa": "Kethvorn", "pantalón": "Drovath", "zapato": "Kethrakor", "sombrero": "Tharvoketh", "reloj": "Kethevar", "ventana": "Uldareth", "techo": "Mordveth", "pared": "Drovethar", "jardín": "Lirathar", "puente": "Uldakor", "camino": "Zarethun", "barco": "Othavorn", "velero": "Vaeloth", "carro": "Darakvorn", "caballero": "Varkathor", "arquero": "Zirevath", "explorador": "Tharvakar", "viajero": "Orvethar", "capitán": "Varkorath", "capitan": "Varkorath", "guardián": "Drovathor", "guardian": "Drovathor", "aprendiz": "Thazurin", "maestro": "Thazarek", "sabio": "Vetharun", "hechicero": "Thazorkar", "gigante": "Morghath", "hada": "Lumaethar", "elfo": "Auralveth", "enano": "Grometh", "orco": "Kharvorn", "goblin": "Drekarun", "gólem": "Gorathor", "quimera": "Kharzamor", "hidra": "Dravokhar", "fénix": "Auralzhir", "fenix": "Auralzhir", "grifo": "Ziremor", "unicornio": "Liravorn", "sirena": "Othariel", "centauro": "Varkalir", "esqueleto": "Morthakar", "zombi": "Morthunor", "cicatriz": "Kharvakar", "señal": "Zarethak", "huella": "Darethor", "rastro": "Varethak", "trampa": "Kharuneth", "recompensa": "Azhurath", "murciélago": "Morvakar", "murcielago": "Morvakar", "ratón": "Kethmor", "raton": "Kethmor", "ardilla": "Lirakhor", "rana": "Narethun", "cocodrilo": "Kharothar", "águila marina": "Othazire", "aguila marina": "Othazire", "pingüino": "Nivakorath", "cisne": "Auralin", "pavo real": "Ziretharun", "gorrión": "Zirekun", "avispa": "Kharzire", "escarabajo": "Drovaketh", "caracol": "Mortharin", "lagarto": "Kharvethun", "camaleón": "Lirakveth", "medusa gigante": "Othamorak", "estrella de mar": "Zarethoth", "coral": "Lirathoth", "ostra": "Othazun", "langosta": "Narakvorn", "amanecer dorado": "Azhuraur", "crepúsculo": "Zeraketh", "medianoche": "Zermorthak", "eclipse": "Miraneth", "cometa": "Zarethvok", "meteorito": "Gorazire", "constelación": "Zaretharun", "órbita": "Orvethun", "gravedad": "Morghun", "vacío": "Nokorath", "nebulosa": "Zorathun", "luz lunar": "Miraural", "rayo solar": "Auronkar", "lluvia de estrellas": "Zarethneth", "nube oscura": "Zerulvak", "viento helado": "Nivavael", "ola": "Othareketh", "marea": "Otharun", "espuma": "Othazeth", "arena dorada": "Azhudareth", "cráter": "Kragdorum", "crater": "Kragdorum", "géiser": "Narakragh", "geiser": "Narakragh", "avalancha": "Nivathor", "terreno": "Dorumethar", "sendero": "Zarethak", "laberinto": "Uldamorth", "ruinas": "Mordareth", "templo": "Auraldrak", "altar": "Thazarethor", "biblioteca": "Tavarun", "pergamino": "Tavaroth", "tinta": "Morthaz", "pluma": "Zireluma", "retrato": "Namarveth", "estatua": "Gorathal", "reliquia": "Azhumorth", "reloj de arena": "Darethketh", "candado": "Uldaketh", "cadena": "Drovamorth", "cuerda": "Tharuneth", "escalera": "Kethdorum", "ventana mágica": "Uldathaz", "ventana magica": "Uldathaz", "espejo": "Miranor", "máscara": "Mortharek", "mascara": "Mortharek", "coraza": "Vorthazar", "guadaña": "Morthakraz", "ballesta": "Zirekraz", "daga": "Krazethun", "hacha": "Gromkraz", "tridente": "Othakraz", "varita": "Thazulir", "báculo": "Thazugrom", "baculo": "Thazugrom", "grimorio": "Tavarthaz", "runa": "Zarethaz", "símbolo": "Namaroth", "profecía": "Orinazeth", "ritual": "Thazurmor", "invocación": "Thazarkor", "transformación": "Orvathaz", "invisibilidad": "Nokaural", "teletransporte": "Uldorvath", "protección": "Drovathaz", "resistencia": "Vorthuneth", "velocidad": "Zakarveth", "agilidad": "Zirethun", "inteligencia": "Vethazur", "confianza": "Lumarun", "amistad": "Daraneth", "lealtad": "Vorthalir", "traición": "Khardrek", "honor": "Tharveth", "orgullo": "Morgharek", "paciencia": "Dhoralun", "curiosidad": "Namarith", "sorpresa": "Lumaethor", "vergüenza": "Durenkhar", "calma": "Murethar", "furia": "Kragkhar", "panadero": "Nakarethor", "cocinero": "Nakarveth", "médico": "Lumaresh", "medico": "Lumaresh", "sanador": "Lumaorath", "herrero": "Gromveth", "carpintero": "Thoradak", "agricultor": "Dorumveth", "pescador": "Otharuneth", "comerciante": "Azhurveth", "mensajero": "Zarethkor", "artista": "Liravethar", "pintor": "Miranethor", "escritor": "Tavareth", "poeta": "Lumaorin", "músico": "Thorineth", "cantante": "Thoraluma", "bailarín": "Zirelath", "actor": "Namarvok", "constructor": "Mordvakar", "arquitecto": "Dorumthar", "hospital": "Lumaethak", "mercado": "Azhurath", "taberna": "Othavethar", "posada": "Tharunor", "puerto": "Othaketh", "fortaleza": "Mordvorth", "muralla": "Drovathun", "torre": "Tharvokar", "mazmorra": "Morthdarak", "calabozo": "Uldamorthak", "aldea": "Marethor", "capital": "Tharaketh", "frontera": "Varethkor", "cementerio": "Morthazeth", "cripta": "Morthulak", "catacumba": "Zermordrak", "observatorio": "Zarethdorum", "laboratorio": "Thazdarak", "academia": "Vethdrak", "jardín secreto": "Tharumlir", "cabaña": "Moraketh", "refugio": "Drovathar", "campamento": "Varkethar", "isla perdida": "Narethor", "tierra prohibida": "Zerathdorum", "reino oculto": "Tharumorath", "dimensión oscura": "Zerorvakar", "cielo eterno": "Avarorin", "bosque ancestral": "Varethorin", "montaña sagrada": "Thoranazur", "caminar": "Zarthen", "saltar": "Kethvorn", "nadar": "Othalen", "volar": "Vaelzire", "trepar": "Thoranak", "caer": "Dorumaketh", "escapar": "Zerakveth", "perseguir": "Varkazarun", "buscar": "Namarvek", "encontrar": "Namarothar", "descubrir": "Orvatharek", "ocultar": "Tharumak", "proteger": "Drovathaz", "atacar": "Kharvakar", "defender": "Vorthadak", "vencer": "Vortharun", "sobrevivir": "Orinaveth", "despertar": "Auralethar", "soñar": "Murumorin", "imaginar": "Namarazur", "crear": "Thazarethak", "destruir": "Kragmorth", "construir": "Mordvethar", "reparar": "Drovakorum", "romper": "Krazdrek", "abrir": "Uldarethun", "cerrar": "Uldakmor", "encender": "Kragaural", "apagar": "Nokkragh", "brillar": "Auralzire", "desaparecer": "Nokorvath", "aparecer": "Uldaveth", "crecer": "Lirathorun", "florecer": "Lirazur", "marchitarse": "Durenlir", "respirar": "Vaelorin", "susurrar": "Thalaneth", "gritar": "Kharathor", "reír": "Lumaketh", "llorar": "Durenluma", "sonreír": "Lumaveth", "temblar": "Kharunor", "descansar": "Murumethar", "celebrar": "Vorthaluma", "festejo": "Lumatharek", "victorioso": "Vortharun", "peligroso": "Kharvorth", "tranquilo": "Mureth", "antiguo": "Dhorath", "eterno": "Orinmor", "mágico": "Thazurin", "magico": "Thazurin", "cerebro": "Vethmoran", "corazón": "Amathor", "pulmón": "Vaelkar", "estómago": "Nakarethun", "hombro": "Drovamir", "codo": "Kethvakar", "muñeca": "Zirethunor", "dedo": "Kethazir", "rodilla": "Dorumvakar", "tobillo": "Kethmorak", "espalda": "Vorthamun", "frente": "Auralethor", "mejilla": "Lumarvek", "barbilla": "Darakmor", "lengua": "Thalanor", "diente": "Gromazeth", "uñas": "Krazethar", "sangre": "Kragorin", "hueso": "Gorvakar", "músculo": "Morghathun", "lágrima": "Dureneth", "lagrima": "Dureneth", "sudor": "Vaelmar", "aliento": "Vaelorak", "pulso": "Kethorin", "hambre": "Nakarethak", "sed": "Otharvek", "desayuno": "Nakarum", "almuerzo": "Nakaveth", "cena": "Nakaroth", "postre": "Lumakhar", "galleta": "Nakazir", "chocolate": "Kraglath", "huevo": "Dorumazir", "arroz": "Narethak", "pasta": "Thalakar", "sopa": "Othamorun", "ensalada": "Lirakmor", "patata": "Dorumethun", "zanahoria": "Liravakar", "cebolla": "Kharalir", "tomate": "Kraglir", "lechuga": "Lirathak", "pimiento": "Kragdareth", "pescado": "Othakhar", "pollo": "Ziremarak", "ternera": "Gromnara", "helado": "Nivlathor", "pastel": "Lumadarak", "zumo": "Othazirun", "despensa": "Nakathor", "cocina": "Nakarvorn", "baño": "Othadun", "dormitorio": "Murumveth", "salón": "Marethak", "garaje": "Drovameth", "espejo roto": "Miradrek", "alfombra": "Morthaleth", "almohada": "Murumazir", "manta": "Murethorin", "colchón": "Dorumluma", "armario": "Vorthameth", "cajón": "Uldakorum", "estantería": "Tavaraketh", "lámpara": "Auraldarak", "lampara": "Auraldarak", "enchufe": "Kethdrov", "interruptor": "Uldazire", "teléfono": "Tharvethun", "ordenador": "Thazvorn", "teclado": "Thazketh", "pantalla": "Zirelathor", "ratón informático": "Kethzire", "raton informatico": "kethzire", "auriculares": "Thorinvar", "cargador": "Vaelthar", "batería": "Kragvorn", "internet": "Orivethar", "mensaje": "Zarethluma", "contraseña": "Uldakhar", "fotografía": "Miranthar", "vídeo": "Namarzire", "película": "Tharomir", "serie": "Tavarethor", "juguete": "Kavoreth", "muñeco": "Kethlumar", "pelota pequeña": "Kavorin", "bicicleta": "Zarvethak", "patinete": "Zirevorn", "autobús": "Darakthar", "tren": "Uldavakar", "avión": "Vaelthorin", "aeropuerto": "Vaelvethar", "estación": "Uldakethor", "semáforo": "Zireketh", "semaforo": "Zireketh", "acera": "Zarethdun", "carretera": "Drovazaren", "túnel": "Morthvakar", "tunel": "Morthvakar", "ascensor": "Uldathorin", "chocho": "Ñuñek", "vulva": "Ñuñek", "follar": "Luciok", "testículo": "Tuski", "testiculo": "Tuski", "testículos": "Tuskiar", "testiculos": "Tuskiar", "pica": "Chutik", "culo": "Joaquit", "viajar": "Orvathen", "limpiar": "Nethaketh", "lavar": "Othadarek", "cocinar": "Nakarvethun", "cantar": "Thoraleth", "bailar": "Zirelathun", "dibujar": "Miranethak", "cortar": "Krazetharun", "coser": "Vorthaleth", "comprar": "Azhurvek", "vender": "Azhurathen", "pagar": "Darakorin", "ahorrar": "Azhumareth", "gastar": "Drekazhur", "enviar": "Zarethveth", "recibir": "Namarvethun", "llamar": "Thalanvok", "contestar": "Kharvethor", "visitar": "Uldarethor", "ayudar": "Daranveth", "cuidar": "Drovamun", "ordenar": "Kethdarak", "recoger": "Nethvethar", "tirar": "Dorumvok", "llenar": "Othavethun", "vaciar": "Nokothar", "mezclar": "Thazdorum", "hervir": "Kragothar", "freír": "Kragethun", "probar": "Nakarvok"};
+const runes={"A": "ᚨ", "B": "ᛒ", "C": "ᚲ", "D": "ᛞ", "E": "ᛖ", "F": "ᚠ", "G": "ᚷ", "H": "ᚺ", "I": "ᛁ", "J": "ᛃ", "K": "ᚲ", "L": "ᛚ", "M": "ᛗ", "N": "ᚾ", "O": "ᛟ", "P": "ᛈ", "Q": "ᛩ", "R": "ᚱ", "S": "ᛊ", "T": "ᛏ", "U": "ᚢ", "V": "ᚡ", "W": "ᚹ", "X": "ᛪ", "Y": "ᛦ", "Z": "ᛉ"};
+function norm(s){return s.toLocaleLowerCase('es').normalize('NFD').replace(/[\u0300-\u036f]/g,'')}
+function tokenize(s){return s.match(/[¿¡]?[^\s]+/gu)||[]}
+  
+function translate(text, reverse=false){
+const words = tokenize(text);
+const result = [];
+
+const verbRoots = {
+'ver': 'Varek',
+'hablar': 'Thalan',
+'mirar': 'Varek',
+'venir': 'Kador',
+'ir': 'Zarth',
+'correr': 'Zakar',
+'esperar': 'Dhor',
+'querer': 'Mave',
+'tener': 'Thur',
+'hacer': 'Darak',
+'jugar': 'Kavor',
+'comer': 'Nakar',
+'beber': 'Othar',
+'dormir': 'Murum',
+'pensar': 'Karem',
+'saber': 'Veth',
+'escuchar': 'Thorin',
+'callar': 'Dumak'
+};
+
+const verbForms = {
+'veo': 'Varek',
+'ves': 'Varek',
+'ve': 'Varek',
+'vi': 'Varekak',
+'viste': 'Varekak',
+'vio': 'Varekak',
+'vimos': 'Varekak',
+'visteis': 'Varekak',
+'vieron': 'Varekak',
+'vere': 'Varekur',
+'veré': 'Varekur',
+'veras': 'Varekur',
+'verás': 'Varekur',
+'vera': 'Varekur',
+'verá': 'Varekur',
+'veremos': 'Varekur',
+'vereis': 'Varekur',
+'veréis': 'Varekur',
+'veran': 'Varekur',
+'verán': 'Varekur'
+};
+
+const reverseForms = {
+'varekak': 'vi',
+'varekur': 'veré',
+'thalanak': 'hablé',
+'thalanur': 'hablaré',
+'kadorak': 'vine',
+'kadorur': 'vendré',
+'zarthak': 'fui',
+'zarthur': 'iré',
+'zakarak': 'corrí',
+'zakarur': 'correré',
+'dhorak': 'esperé',
+'dhorur': 'esperaré',
+'maveak': 'quise',
+'maveur': 'querré',
+'thurak': 'tuve',
+'thurur': 'tendré',
+'darakak': 'hice',
+'darakur': 'haré',
+'kavorak': 'jugué',
+'kavorur': 'jugaré',
+'nakarak': 'comí',
+'nakarur': 'comeré',
+'otharak': 'bebí',
+'otharur': 'beberé',
+'murumak': 'dormí',
+'murumur': 'dormiré',
+'karem ak': 'pensé',
+'karemur': 'pensaré',
+'vethak': 'supe',
+'vethur': 'sabré',
+'thorinak': 'escuché',
+'thorinur': 'escucharé',
+'dumakak': 'callé',
+'dumakur': 'callaré'
+};
+
+for(const token of words){
+const m = token.match(/^([¿¡]?)([\p{L}]+(?:[-'][\p{L}]+)?)([?!.,;:]*)$/u);
+if(!m){
+result.push(token);
+continue;
+}
+
+const [, prefix, word, punc] = m;
+const key = norm(word);
+let val;
+
+if(!reverse){
+  if(key === 'nok'){
+    val = 'Nok';
+  } else if(verbForms[key]){
+    val = verbForms[key];
+  } else if(dict[key]){
+    val = dict[key];
+  } else if(verbRoots[key]){
+    val = verbRoots[key];
+  } else {
+    result.push(token);
+    continue;
+  }
+
+  if(prefix === '¿') result.push('Ka');
+  result.push(val + punc);
+} else {
+  if(key === 'ka'){
+    result.push('¿');
+    continue;
+  }
+  if(key === 'nok'){
+    result.push('no');
+    continue;
+  }
+
+  if(reverseForms[key]){
+    result.push(reverseForms[key] + punc);
+    continue;
+  }
+
+  val = Object.keys(dict).find(k => norm(dict[k]) === key);
+  if(!val){
+    result.push(token);
+    continue;
+  }
+  result.push(val + punc);
+}
+
+}
+
+return result.join(' ').replace(/¿\s+/g, '¿');
+}
+
+
+
+
+function doTranslate(reverse=false){const raw=document.getElementById('input').value.trim();const out=document.getElementById('output');if(!raw){out.textContent='Escribe una frase para empezar.';return;}out.textContent=translate(raw,reverse);document.getElementById('status').textContent='Traducción experimental: las palabras desconocidas se mantienen sin cambios.';}
+document.getElementById('toDrak').onclick=()=>doTranslate(false);document.getElementById('toEs').onclick=()=>doTranslate(true);
+document.getElementById('clear').onclick=()=>{document.getElementById('input').value='';document.getElementById('output').textContent='Tu traducción aparecerá aquí…';document.getElementById('status').textContent='';};
+document.getElementById('copy').onclick=async()=>{try{await navigator.clipboard.writeText(document.getElementById('output').textContent);document.getElementById('status').textContent='¡Copiado!';}catch(e){document.getElementById('status').textContent='Selecciona el resultado y cópialo.';}};
+document.getElementById('speak').onclick=()=>{if(!('speechSynthesis'in window)){document.getElementById('status').textContent='Tu navegador no admite lectura en voz alta.';return;}let u=new SpeechSynthesisUtterance(document.getElementById('output').textContent);u.lang='es-ES';u.rate=.82;speechSynthesis.speak(u);};
+document.querySelectorAll('.example').forEach(b=>b.onclick=()=>{document.getElementById('input').value=b.dataset.text;doTranslate(false);document.getElementById('traductor').scrollIntoView({behavior:'smooth'});});
+const dictionary=document.getElementById('dictionary'),search=document.getElementById('search');
+function renderDict(){const q=norm(search.value.trim());dictionary.innerHTML='';const rows=Object.entries(dict).filter(([es,dr])=>!q||norm(es).includes(q)||norm(dr).includes(q)).sort((a,b)=>a[0].localeCompare(b[0],'es'));document.getElementById('count').textContent=rows.length+' entradas';for(const [es,dr] of rows){const c=document.createElement('div');c.className='wordcard';const a=document.createElement('div');a.className='dw';a.textContent=dr;const b=document.createElement('div');b.className='dm';b.textContent=es;c.append(a,b);dictionary.append(c);}}
+search.addEventListener('input',renderDict);renderDict();
+for(const [letter,symbol] of Object.entries(runes)){const d=document.createElement('div');d.className='runeitem';d.innerHTML='<div class="runesymbol"></div><div class="runeletter"></div>';d.children[0].textContent=symbol;d.children[1].textContent=letter;document.getElementById('runegrid').append(d);}
+function showRunes(){const s=document.getElementById('runeInput').value.toUpperCase();document.getElementById('runeOutput').textContent=[...s].map(c=>runes[c]||c).join(' ');}
+document.getElementById('runeInput').addEventListener('input',showRunes);
+const quizzes=[['¿Qué significa “Tharek”?',['Hola','Adiós','Silencio'],'Hola'],['¿Qué significa “Daran”?',['Profesor','Amigo','Fuerza'],'Amigo'],['¿Qué significa “Dumak”?',['Silencio','Agua','Luna'],'Silencio'],['¿Qué significa “Zarth”?',['Ir','Hablar','Mirar'],'Ir'],['¿Qué significa “Nara”?',['Fuego','Agua','Piedra'],'Agua'],['¿Qué significa “Vorth”?',['Oscuridad','Fuerza','Amigo'],'Fuerza']];
+let qi=0;function showQuiz(){const q=quizzes[qi];document.getElementById('quizQuestion').textContent=q[0];const c=document.getElementById('quizChoices');c.innerHTML='';document.getElementById('quizResult').textContent='';q[1].forEach(choice=>{const b=document.createElement('button');b.className='secondary';b.textContent=choice;b.onclick=()=>{document.getElementById('quizResult').textContent=choice===q[2]?'¡Correcto! 🗿':'Casi. La respuesta correcta es: '+q[2]+'.';};c.append(b);});}
+showQuiz();document.getElementById('nextQuiz').onclick=()=>{qi=(qi+1)%quizzes.length;showQuiz();};
+document.getElementById('input').addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key==='Enter')doTranslate(false);});
+function playMagicSound() {
+  try {
+    const audio = new (window.AudioContext || window.webkitAudioContext)();
+
+    audio.resume().then(() => {
+      const oscillator = audio.createOscillator();
+      const gain = audio.createGain();
+
+      oscillator.type = 'sine';
+      oscillator.frequency.setValueAtTime(660, audio.currentTime);
+      oscillator.frequency.exponentialRampToValueAtTime(990, audio.currentTime + 0.12);
+
+      gain.gain.setValueAtTime(0.12, audio.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audio.currentTime + 0.2);
+
+      oscillator.connect(gain);
+      gain.connect(audio.destination);
+
+      oscillator.start();
+      oscillator.stop(audio.currentTime + 0.2);
+      oscillator.onended = () => audio.close();
+    });
+  } catch (error) {
+    console.log('El sonido no está disponible en este navegador.');
+  }
+}
+
+document.getElementById('toDrak').addEventListener('click', playMagicSound);
+document.getElementById('toEs').addEventListener('click', playMagicSound);
+document.getElementById('clear').addEventListener('click', playMagicSound);
+</script><section id="gramatica">
+  <h2>📜 Gramática oficial de Drakthar</h2>
+
+  <div class="panel">
+    <h3>🐉 1. Orden de las palabras</h3>
+    <p>Las frases siguen el orden Sujeto + Verbo + Complemento.</p>
+    <p><strong>Ejemplo:</strong> Ar vek Mora.</p>
+    <p>Significado: Yo veo la casa.</p>
+
+
+<h3>❌ 2. Negaciones</h3>
+<p>Usamos <strong>Nok</strong> para negar una frase.</p>
+<p><strong>Ejemplo:</strong> Ar Nok vek Mora.</p>
+<p>Significado: Yo no veo la casa.</p>
+
+<h3>❓ 3. Preguntas</h3>
+<p>Colocamos <strong>Ka</strong> al principio de una pregunta.</p>
+<p><strong>Ejemplo:</strong> Ka Tar vek Mora?</p>
+<p>Significado: ¿Tú ves la casa?</p>
+
+<h3>⏳ 4. Tiempos verbales</h3>
+<p><strong>Presente:</strong> usamos el verbo normal.</p>
+<p><strong>Pasado:</strong> añadimos -ak al verbo.</p>
+<p><strong>Futuro:</strong> añadimos -ur al verbo.</p>
+<p><strong>Ejemplos:</strong> vek = ver; vekak = vi; vekur = veré.</p>
+
+<h3>👥 5. Plurales</h3>
+<p>Como regla general, añadimos -ar para formar el plural.</p>
+<p>Hay excepciones, como <strong>Daran</strong>, que puede significar amigo o amigos.</p>
+
+<h3>👑 6. Posesión</h3>
+<p>Usamos <strong>en</strong> para indicar posesión.</p>
+<p><strong>Ejemplo:</strong> Mora en Ar.</p>
+<p>Significado: Mi casa.</p>
+
+<h3>✨ 7. Palabras desconocidas</h3>
+<p>El traductor conserva las palabras que todavía no están en el diccionario.</p>
+
+<h3>👥 8. Pronombres personales</h3>
+<p>Los pronombres indican quién realiza la acción y se colocan antes del verbo.</p>
+<p><strong>Yo:</strong> Ar</p>
+<p><strong>Tú:</strong> Tar</p>
+<p><strong>Él / Ella:</strong> Uth</p>
+<p><strong>Nosotros / Nosotras:</strong> Arak</p>
+<p><strong>Ellos / Ellas:</strong> Uthar</p>
+<p><strong>Ejemplos:</strong> Ar vek = Yo veo. Tar vek = Tú ves.</p>
+
+
+
+  </div>
+</section>
+<section id="juego-drakthar" style="max-width:650px;margin:30px auto;padding:24px;background:#100b12;color:#f5e6c8;border:2px solid #c99b3b;border-radius:16px;text-align:center;">
+  <h2 style="color:#e8b94e;">🐉 El desafío de Drakthar</h2>
+  <p>¡Acierta las traducciones y conviértete en una leyenda!</p>
+
+  <div id="juego-inicio">
+    <p>Responde 10 preguntas. Cada acierto vale 1 punto.</p>
+    <button id="juego-empezar" type="button" style="padding:12px 20px;background:#8b1e2d;color:white;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;">⚔️ Empezar partida</button>
+  </div>
+
+  <div id="juego-pregunta" hidden>
+    <p id="juego-progreso"></p>
+    <h3 id="juego-palabra"></h3>
+    <div id="juego-opciones" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;"></div>
+    <p id="juego-mensaje" aria-live="polite"></p>
+    <p id="juego-puntos">Puntos: 0</p>
+    <button id="juego-siguiente" type="button" hidden style="padding:10px 16px;background:#8b1e2d;color:white;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;">Siguiente ➜</button>
+  </div>
+
+  <div id="juego-final" hidden>
+    <h3>🏆 ¡Partida terminada!</h3>
+    <p id="juego-resultado"></p>
+    <button id="juego-repetir" type="button" style="padding:12px 20px;background:#8b1e2d;color:white;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;">🔄 Jugar otra vez</button>
+  </div>
+</section>
+
+<script>
+(function () {
+  const preguntas = [
+    ["hola", "Tharek"], ["dragón", "Dravok"],
+    ["bruja", "Varkira"], ["mago", "Thazarek"],
+    ["casa", "Mora"], ["fuego", "Kragh"],
+    ["agua", "Nara"], ["rey", "Tharok"],
+    ["reina", "Tharika"], ["espada", "Krazor"],
+    ["escudo", "Drovak"], ["familia", "Mareth"],
+    ["amigo", "Daran"], ["luna", "Mira"],
+    ["sol", "Auron"], ["magia", "Thazur"],
+    ["perro", "Nickrack"], ["gato", "Mekrath"],
+    ["libro", "Tavar"], ["escuela", "Drak"],
+    ["monstruo", "Kharvok"], ["portal", "Uldrav"],
+    ["poción", "Nivareth"], ["fantasma", "Ulmora"],
+    ["castillo", "Mordrak"], ["aventura", "Tharvok"],
+    ["oro", "Azharek"], ["plata", "Nivorak"],
+    ["batalla", "Kharvath"], ["esperanza", "Lumarath"]
+  ];
+
+  const inicio = document.getElementById("juego-inicio");
+  const pregunta = document.getElementById("juego-pregunta");
+  const final = document.getElementById("juego-final");
+  const palabra = document.getElementById("juego-palabra");
+  const opciones = document.getElementById("juego-opciones");
+  const mensaje = document.getElementById("juego-mensaje");
+  const progreso = document.getElementById("juego-progreso");
+  const puntosTexto = document.getElementById("juego-puntos");
+  const siguiente = document.getElementById("juego-siguiente");
+  let ronda = 0, puntos = 0, partida = [];
+
+  function mezclar(lista) {
+    return lista.slice().sort(() => Math.random() - 0.5);
+  }
+
+  function empezar() {
+    partida = mezclar(preguntas).slice(0, 10);
+    ronda = 0;
+    puntos = 0;
+    inicio.hidden = true;
+    final.hidden = true;
+    pregunta.hidden = false;
+    mostrarPregunta();
+  }
+
+  function mostrarPregunta() {
+    const actual = partida[ronda];
+    progreso.textContent = "Pregunta " + (ronda + 1) + " de 10";
+    palabra.textContent = "¿Cómo se dice «" + actual[0] + "» en Drakthar?";
+    mensaje.textContent = "";
+    puntosTexto.textContent = "Puntos: " + puntos;
+    siguiente.hidden = true;
+    opciones.replaceChildren();
+
+    const respuestas = mezclar([
+      actual[1],
+      ...mezclar(preguntas.filter(p => p[1] !== actual[1]).map(p => p[1])).slice(0, 3)
+    ]);
+
+    respuestas.forEach(respuesta => {
+      const boton = document.createElement("button");
+      boton.type = "button";
+      boton.textContent = respuesta;
+      boton.style.cssText = "padding:12px 8px;background:#25151d;color:#f5e6c8;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;overflow-wrap:anywhere;";
+      boton.addEventListener("click", () => responder(boton, respuesta, actual[1]));
+      opciones.appendChild(boton);
+    });
+  }
+
+  function responder(boton, respuesta, correcta) {
+    if (siguiente.hidden === false) return;
+    opciones.querySelectorAll("button").forEach(b => b.disabled = true);
+
+    if (respuesta === correcta) {
+      puntos++;
+      mensaje.textContent = "✅ ¡Correcto! +1 punto";
+    } else {
+      mensaje.textContent = "❌ La respuesta era: " + correcta;
+    }
+
+    puntosTexto.textContent = "Puntos: " + puntos;
+    siguiente.hidden = false;
+    siguiente.textContent = ronda === 9 ? "Ver resultado 🏆" : "Siguiente ➜";
+  }
+
+  function terminar() {
+    pregunta.hidden = true;
+    final.hidden = false;
+    let titulo = puntos === 10 ? "🐉 ¡Dragón legendario!" :
+      puntos >= 8 ? "👑 Maestro de Drakthar" :
+      puntos >= 4 ? "⚔️ Guerrero" : "📜 Aprendiz";
+    document.getElementById("juego-resultado").textContent =
+      "Has conseguido " + puntos + " de 10 puntos. " + titulo;
+  }
+
+  document.getElementById("juego-empezar").addEventListener("click", empezar);
+  document.getElementById("juego-repetir").addEventListener("click", empezar);
+  siguiente.addEventListener("click", () => {
+    if (ronda === 9) terminar();
+    else { ronda++; mostrarPregunta(); }
+  });
+})();
+</script>
+
+<section id="jefe-drakthar" style="max-width:650px;margin:30px auto;padding:24px;background:#16080d;color:#f5e6c8;border:2px solid #c99b3b;border-radius:16px;text-align:center;">
+  <h2 style="color:#ff5555;">🐉 JEFE FINAL: DRAVOK</h2>
+  <p>¡El Dragón Rojo desafía tu conocimiento de Drakthar!</p>
+  <div style="font-size:60px;">🐲🔥</div>
+  <p>❤️ Vida del dragón: <strong id="vida-dravok">100</strong>%</p>
+  <div style="height:18px;background:#333;border-radius:10px;overflow:hidden;">
+    <div id="barra-dravok" style="height:100%;width:100%;background:#d71935;transition:width .3s;"></div>
+  </div>
+  <p id="mensaje-dravok">Pulsa para comenzar el combate.</p>
+  <button id="iniciar-dravok" type="button" style="padding:12px 20px;background:#8b1e2d;color:white;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;">⚔️ ¡Luchar!</button>
+  <div id="reto-dravok" hidden>
+    <h3 id="pregunta-dravok"></h3>
+    <div id="opciones-dravok" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;"></div>
+  </div>
+</section>
+
+<script>
+(function () {
+  const retos = [
+    {es:"hola", dr:"Tharek"},
+    {es:"dragón", dr:"Dravok"},
+    {es:"casa", dr:"Mora"},
+    {es:"fuego", dr:"Kragh"},
+    {es:"agua", dr:"Nara"},
+    {es:"rey", dr:"Tharok"},
+    {es:"bruja", dr:"Varkira"},
+    {es:"espada", dr:"Krazor"}
+  ];
+
+  let vida = 100;
+  let indice = 0;
+  let activo = false;
+
+  const vidaTexto = document.getElementById("vida-dravok");
+  const barra = document.getElementById("barra-dravok");
+  const mensaje = document.getElementById("mensaje-dravok");
+  const reto = document.getElementById("reto-dravok");
+  const pregunta = document.getElementById("pregunta-dravok");
+  const opciones = document.getElementById("opciones-dravok");
+  const botonInicio = document.getElementById("iniciar-dravok");
+
+  function mezclar(lista) {
+    return lista.slice().sort(() => Math.random() - 0.5);
+  }
+
+  function mostrarReto() {
+    if (vida <= 0) {
+      mensaje.textContent = "🏆 ¡HAS DERROTADO A DRAVOK! ¡Eres una leyenda de Drakthar!";
+      reto.hidden = true;
+      botonInicio.hidden = false;
+      botonInicio.textContent = "🔄 Volver a luchar";
+      activo = false;
+      return;
+    }
+
+    const actual = retos[indice % retos.length];
+    pregunta.textContent = "¿Cómo se dice «" + actual.es + "» en Drakthar?";
+    opciones.replaceChildren();
+
+    const respuestas = mezclar([
+      actual.dr,
+      ...mezclar(retos.filter(r => r.dr !== actual.dr).map(r => r.dr)).slice(0, 3)
+    ]);
+
+    respuestas.forEach(respuesta => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = respuesta;
+      b.style.cssText = "padding:12px 8px;background:#25151d;color:#f5e6c8;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;overflow-wrap:anywhere;";
+      b.addEventListener("click", () => {
+        if (!activo) return;
+        activo = false;
+        opciones.querySelectorAll("button").forEach(x => x.disabled = true);
+
+        if (respuesta === actual.dr) {
+          vida = Math.max(0, vida - 20);
+          mensaje.textContent = "💥 ¡Golpe directo! Dravok pierde 20 puntos de vida.";
+        } else {
+          mensaje.textContent = "🔥 ¡Dravok resiste! La respuesta correcta era " + actual.dr + ".";
+        }
+
+        vidaTexto.textContent = vida;
+        barra.style.width = vida + "%";
+        indice++;
+
+        if (vida === 0) {
+          mostrarReto();
+        } else {
+          const continuar = document.createElement("button");
+          continuar.type = "button";
+          continuar.textContent = "➡️ Continuar combate";
+          continuar.style.cssText = "grid-column:1/-1;padding:12px;background:#8b1e2d;color:white;border:1px solid #c99b3b;border-radius:10px;cursor:pointer;";
+          continuar.addEventListener("click", () => {
+            continuar.remove();
+            activo = true;
+            mostrarReto();
+          });
+          opciones.appendChild(continuar);
+        }
+      });
+      opciones.appendChild(b);
+    });
+  }
+
+  botonInicio.addEventListener("click", () => {
+    vida = 100;
+    indice = 0;
+    activo = true;
+    vidaTexto.textContent = vida;
+    barra.style.width = "100%";
+    mensaje.textContent = "⚔️ ¡El combate ha comenzado!";
+    botonInicio.hidden = true;
+    reto.hidden = false;
+    mostrarReto();
+  });
+})();
+</script>
+
+<!-- MAPA DEL MUNDO DE DRAKTHAR -->
+<section id="mapa-drakthar" style="max-width:900px;margin:40px auto;padding:25px;background:#100b12;color:#f5e6c8;border:2px solid #c99b3b;border-radius:18px;text-align:center;font-family:Arial,sans-serif;">
+
+  <h2 style="color:#e8b94e;font-size:30px;">🗺️ El mundo de Drakthar</h2>
+  <p>Explora las tierras antiguas y demuestra que eres digno del poder del dragón.</p>
+
+  <div id="zonas-drakthar" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px;margin-top:25px;">
+
+    <div style="padding:18px;background:#18251a;border:1px solid #70a66b;border-radius:12px;">
+      <div style="font-size:40px;">🌲</div>
+      <h3>Bosque de Vareth</h3>
+      <p>El comienzo de tu aventura.</p>
+      <button data-zona="0" type="button">🌿 Explorar</button>
+    </div>
+
+    <div style="padding:18px;background:#29140e;border:1px solid #c75c32;border-radius:12px;">
+      <div style="font-size:40px;">🌋</div>
+      <h3>Volcán de Kraghor</h3>
+      <p>Una tierra de fuego y pruebas.</p>
+      <button data-zona="1" type="button">🔒 Bloqueado</button>
+    </div>
+
+    <div style="padding:18px;background:#17172c;border:1px solid #7777cc;border-radius:12px;">
+      <div style="font-size:40px;">🏰</div>
+      <h3>Reino de Nivarak</h3>
+      <p>Un reino lleno de misterios.</p>
+      <button data-zona="2" type="button">🔒 Bloqueado</button>
+    </div>
+
+    <div style="padding:18px;background:#291020;border:1px solid #bd5d9a;border-radius:12px;">
+      <div style="font-size:40px;">⚔️</div>
+      <h3>Castillo de Mordrak</h3>
+      <p>Prepárate para una gran batalla.</p>
+      <button data-zona="3" type="button">🔒 Bloqueado</button>
+    </div>
+
+    <div style="padding:18px;background:#270c0c;border:1px solid #e04444;border-radius:12px;">
+      <div style="font-size:40px;">🐉</div>
+      <h3>Guarida de Dravok</h3>
+      <p>El desafío definitivo.</p>
+      <button data-zona="4" type="button">🔒 Bloqueado</button>
+    </div>
+
+  </div>
+
+  <div id="mensaje-mapa-drakthar" role="status" style="margin-top:25px;padding:15px;background:#080609;border-radius:10px;">
+    🌲 ¡Tu aventura comienza en el Bosque de Vareth!
+  </div>
+</section>
+
+<script>
+(function () {
+  const mapa = document.getElementById("mapa-drakthar");
+  if (!mapa || mapa.dataset.iniciado === "si") return;
+  mapa.dataset.iniciado = "si";
+
+  const botones = mapa.querySelectorAll("button[data-zona]");
+  const mensaje = document.getElementById("mensaje-mapa-drakthar");
+  const nombres = [
+    "Bosque de Vareth",
+    "Volcán de Kraghor",
+    "Reino de Nivarak",
+    "Castillo de Mordrak",
+    "Guarida de Dravok"
+  ];
+  const iconos = ["🌲", "🌋", "🏰", "⚔️", "🐉"];
+  let desbloqueada = 0;
+
+  botones.forEach(function (boton, indice) {
+    boton.style.background = "linear-gradient(135deg,#6f1724,#a52a2a)";
+    boton.style.color = "#ffe6a6";
+    boton.style.border = "1px solid #c99b3b";
+    boton.style.borderRadius = "8px";
+    boton.style.padding = "10px 14px";
+    boton.style.cursor = "pointer";
+    boton.style.fontWeight = "bold";
+
+    boton.addEventListener("click", function () {
+      if (indice > desbloqueada) {
+        mensaje.textContent = "🔒 Primero debes completar las zonas anteriores.";
+        return;
+      }
+
+      if (indice === desbloqueada && indice < 4) {
+        desbloqueada++;
+        botones[desbloqueada].textContent = "✨ Zona desbloqueada";
+        mensaje.textContent = "🎉 ¡Has desbloqueado " + nombres[desbloqueada] + "!";
+      } else if (indice === 4) {
+        mensaje.textContent = "🐉 ¡Has llegado a la Guarida de Dravok! Prepárate para el desafío final.";
+      } else {
+        mensaje.textContent = iconos[indice] + " Estás explorando " + nombres[indice] + ". ¡Sigue avanzando!";
+      }
+
+      botones.forEach(function (b, i) {
+        if (i <= desbloqueada) {
+          b.textContent = i === desbloqueada ? "✨ Explorar zona" : "✅ Zona disponible";
+        }
+      });
+    });
+  });
+})();
+</script>
+  
+<!-- ================================== -->
+<!-- RPG: LAS CRÓNICAS DE DRAKTHAR      -->
+<!-- ================================== -->
+
+<section id="rpg-drakthar" style="
+max-width:950px;
+margin:40px auto;
+padding:24px;
+background:#100910;
+color:#f5e6c8;
+border:2px solid #c99b3b;
+border-radius:18px;
+font-family:Arial,sans-serif;
+">
+
+<style>
+#rpg-drakthar *{box-sizing:border-box}
+#rpg-drakthar h2,#rpg-drakthar h3{color:#e8b94e}
+#rpg-drakthar .rpg-panel{
+  background:#1b101b;
+  border:1px solid #70452c;
+  border-radius:12px;
+  padding:16px;
+  margin:14px 0;
+}
+#rpg-drakthar .rpg-button{
+  background:linear-gradient(135deg,#6f1724,#a52a2a);
+  color:#ffe6a6;
+  border:1px solid #c99b3b;
+  border-radius:9px;
+  padding:11px 15px;
+  margin:5px;
+  cursor:pointer;
+  font-weight:bold;
+}
+#rpg-drakthar .rpg-button:disabled{
+  opacity:.45;
+  cursor:not-allowed;
+}
+#rpg-drakthar .rpg-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:12px;
+}
+#rpg-drakthar .rpg-stat{
+  background:#291725;
+  border-radius:9px;
+  padding:12px;
+  text-align:center;
+}
+#rpg-drakthar .rpg-progress{
+  height:14px;
+  background:#30202b;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:8px;
+}
+#rpg-drakthar #rpg-xp-bar{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,#8b202e,#e8b94e);
+  transition:width .3s;
+}
+#rpg-drakthar .rpg-choice{
+  display:block;
+  width:100%;
+  text-align:left;
+  margin:8px 0;
+  padding:12px;
+  background:#211521;
+  color:#f5e6c8;
+  border:1px solid #986c43;
+  border-radius:8px;
+  cursor:pointer;
+}
+#rpg-drakthar .rpg-choice:hover{
+  background:#42202c;
+}
+#rpg-drakthar .rpg-choice:disabled{
+  cursor:default;
+  opacity:.75;
+}
+</style>
+
+<header style="text-align:center">
+  <div style="font-size:65px">🐉⚔️🐲</div>
+  <h2 style="font-size:30px;margin:8px">LAS CRÓNICAS DE DRAKTHAR</h2>
+  <p>Conviértete en una leyenda, domina la magia y conquista los cinco territorios.</p>
+</header>
+
+<!-- PERSONAJE -->
+<div class="rpg-panel">
+  <h3>🛡️ Tu personaje</h3>
+
+  <div class="rpg-grid">
+    <div class="rpg-stat">
+      <div>👑 Título</div>
+      <strong id="rpg-title">Aprendiz de Drakthar</strong>
+    </div>
+
+    <div class="rpg-stat">
+      <div>⭐ Nivel</div>
+      <strong id="rpg-level">1</strong>
+    </div>
+
+    <div class="rpg-stat">
+      <div>✨ Experiencia</div>
+      <strong id="rpg-xp">0 XP</strong>
+    </div>
+
+    <div class="rpg-stat">
+      <div>💎 Cristales</div>
+      <strong id="rpg-gems">0</strong>
+    </div>
+  </div>
+
+  <div class="rpg-progress">
+    <div id="rpg-xp-bar"></div>
+  </div>
+  <p id="rpg-xp-info">0 / 100 XP para el siguiente nivel</p>
+</div>
+
+<!-- MAPA -->
+<div class="rpg-panel">
+  <h3>🗺️ Tu aventura</h3>
+
+  <div class="rpg-grid">
+    <div class="rpg-stat">
+      🌲
+      <h3>Bosque de Vareth</h3>
+      <p>Aprende las palabras antiguas.</p>
+      <button class="rpg-button" data-rpg-zone="0">Explorar</button>
+    </div>
+
+    <div class="rpg-stat">
+      🌋
+      <h3>Volcán de Kraghor</h3>
+      <p>Enfréntate a las pruebas de fuego.</p>
+      <button class="rpg-button" data-rpg-zone="1">Explorar</button>
+    </div>
+
+    <div class="rpg-stat">
+      🏰
+      <h3>Reino de Nivarak</h3>
+      <p>Descubre los secretos del reino.</p>
+      <button class="rpg-button" data-rpg-zone="2">Explorar</button>
+    </div>
+
+    <div class="rpg-stat">
+      ⚔️
+      <h3>Castillo de Mordrak</h3>
+      <p>Demuestra tu sabiduría en combate.</p>
+      <button class="rpg-button" data-rpg-zone="3">Explorar</button>
+    </div>
+
+    <div class="rpg-stat">
+      🐉
+      <h3>Guarida de Dravok</h3>
+      <p>Enfréntate al dragón legendario.</p>
+      <button class="rpg-button" data-rpg-zone="4">Explorar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MISIONES -->
+<div class="rpg-panel">
+  <h3>📜 Diario de misiones</h3>
+  <p id="rpg-zone-message" role="status">
+    Selecciona una zona para comenzar tu aventura.
+  </p>
+  <div id="rpg-mission"></div>
+</div>
+
+<!-- MASCOTAS -->
+<div class="rpg-panel">
+  <h3>🐲 Colección de dragones</h3>
+  <p>Completa misiones para conseguir compañeros legendarios.</p>
+
+  <div class="rpg-grid">
+    <div class="rpg-stat">
+      🐣
+      <h3>Drakito</h3>
+      <p>Un pequeño dragón de fuego.</p>
+      <strong id="rpg-pet-0">🔒 Sin conseguir</strong>
+    </div>
+
+    <div class="rpg-stat">
+      🐲
+      <h3>Sombraveloz</h3>
+      <p>Un dragón oscuro y veloz.</p>
+      <strong id="rpg-pet-1">🔒 Sin conseguir</strong>
+    </div>
+
+    <div class="rpg-stat">
+      🔥
+      <h3>Dravok Joven</h3>
+      <p>Un poderoso compañero de llamas.</p>
+      <strong id="rpg-pet-2">🔒 Sin conseguir</strong>
+    </div>
+  </div>
+
+  <p id="rpg-pet-message">Tu colección está esperando a sus primeros dragones.</p>
+</div>
+
+<div class="rpg-panel" style="text-align:center">
+  <h3>🏆 Tu leyenda</h3>
+  <p id="rpg-achievements">Todavía no has completado ninguna misión.</p>
+  <button class="rpg-button" id="rpg-reset">Reiniciar aventura</button>
+  <p style="font-size:12px;color:#b8a58b">
+    Tu progreso se guarda en este navegador.
+  </p>
+</div>
+
+</section>
+
+<script>
+(function(){
+  const root = document.getElementById("rpg-drakthar");
+  if(!root || root.dataset.ready === "yes") return;
+  root.dataset.ready = "yes";
+
+  const SAVE_KEY = "drakthar_rpg_save_v1";
+
+  const zones = [
+    {
+      name:"Bosque de Vareth",
+      icon:"🌲",
+      reward:25,
+      gems:5,
+      pet:0,
+      questions:[
+        {q:"¿Cómo se dice «hola» en Drakthar?",a:["Tharek","Vardak","Nok","Mordrak"],correct:"Tharek"},
+        {q:"¿Cómo se dice «amigo»?",a:["Kragh","Daran","Dravok","Tharok"],correct:"Daran"},
+        {q:"¿Cómo se dice «dragón»?",a:["Dravok","Nara","Mora","Azharek"],correct:"Dravok"}
+      ]
+    },
+    {
+      name:"Volcán de Kraghor",
+      icon:"🌋",
+      reward:40,
+      gems:8,
+      pet:0,
+      questions:[
+        {q:"¿Cómo se dice «fuego»?",a:["Nara","Kragh","Mira","Drak"],correct:"Kragh"},
+        {q:"¿Cómo se dice «agua»?",a:["Nara","Tharek","Krazor","Mordrak"],correct:"Nara"},
+        {q:"¿Cómo se dice «volcán»?",a:["Kraghor","Tharika","Auraleth","Dareth"],correct:"Kraghor"}
+      ]
+    },
+    {
+      name:"Reino de Nivarak",
+      icon:"🏰",
+      reward:55,
+      gems:10,
+      pet:1,
+      questions:[
+        {q:"¿Cómo se dice «rey»?",a:["Tharok","Dravok","Nivorak","Drek"],correct:"Tharok"},
+        {q:"¿Cómo se dice «reina»?",a:["Tharika","Mareth","Ulmora","Kragh"],correct:"Tharika"},
+        {q:"¿Cómo se dice «esperanza»?",a:["Lumarath","Kharum","Nara","Mordeth"],correct:"Lumarath"}
+      ]
+    },
+    {
+      name:"Castillo de Mordrak",
+      icon:"⚔️",
+      reward:70,
+      gems:15,
+      pet:1,
+      questions:[
+        {q:"¿Cómo se dice «espada»?",a:["Krazor","Varkira","Nareth","Auron"],correct:"Krazor"},
+        {q:"¿Cómo se dice «escudo»?",a:["Drovak","Nivareth","Mira","Thazur"],correct:"Drovak"},
+        {q:"¿Cómo se dice «victoria»?",a:["Vortharok","Drekarok","Kharvok","Gromak"],correct:"Vortharok"}
+      ]
+    },
+    {
+      name:"Guarida de Dravok",
+      icon:"🐉",
+      reward:100,
+      gems:25,
+      pet:2,
+      questions:[
+        {q:"¿Cómo se dice «poder supremo»?",a:["Morghazar","Auraleth","Dareth","Nivorak"],correct:"Morghazar"},
+        {q:"¿Cómo se dice «inmortal»?",a:["Orinath","Krageth","Droveth","Maren"],correct:"Orinath"},
+        {q:"¿Cómo se dice «magia»?",a:["Thazur","Vardak","Akar","Mordeth"],correct:"Thazur"}
+      ]
+    }
+  ];
+
+  function newState(){
+    return {
+      xp:0,
+      gems:0,
+      completed:[],
+      pets:[],
+      zone:0,
+      question:0,
+      score:0,
+      active:false,
+      feedback:"",
+      choices:[],
+      lastReward:""
+    };
+  }
+
+  function load(){
+    try{
+      const saved = JSON.parse(localStorage.getItem(SAVE_KEY));
+      if(!saved || typeof saved !== "object") return newState();
+
+      const s = newState();
+      s.xp = Math.max(0, Number(saved.xp)||0);
+      s.gems = Math.max(0, Number(saved.gems)||0);
+      s.completed = Array.isArray(saved.completed)
+        ? saved.completed.filter(n=>Number.isInteger(n)&&n>=0&&n<zones.length)
+        : [];
+      s.pets = Array.isArray(saved.pets)
+        ? saved.pets.filter(n=>Number.isInteger(n)&&n>=0&&n<=2)
+        : [];
+      return s;
+    }catch(e){
+      return newState();
+    }
+  }
+
+  let state = load();
+
+  function save(){
+    try{
+      localStorage.setItem(SAVE_KEY,JSON.stringify({
+        xp:state.xp,
+        gems:state.gems,
+        completed:state.completed,
+        pets:state.pets
+      }));
+    }catch(e){}
+  }
+
+  function level(){
+    return Math.floor(state.xp/100)+1;
+  }
+
+  function title(){
+    const lv = level();
+    if(state.completed.includes(4)) return "👑 Leyenda de Drakthar";
+    if(lv>=8) return "🐉 Señor de los Dragones";
+    if(lv>=5) return "⚔️ Campeón de Drakthar";
+    if(lv>=3) return "🛡️ Guerrero de Drakthar";
+    return "🌱 Aprendiz de Drakthar";
+  }
+
+  function el(id){
+    return root.querySelector("#"+id);
+  }
+
+  function render(){
+    el("rpg-title").textContent = title();
+    el("rpg-level").textContent = level();
+    el("rpg-xp").textContent = state.xp+" XP";
+    el("rpg-gems").textContent = state.gems;
+
+    const progress = state.xp%100;
+    el("rpg-xp-bar").style.width = progress+"%";
+    el("rpg-xp-info").textContent =
+      progress+" / 100 XP para el siguiente nivel";
+
+    root.querySelectorAll("[data-rpg-zone]").forEach(button=>{
+      const i = Number(button.dataset.rpgZone);
+      const unlocked = i===0 || state.completed.includes(i-1) || state.completed.includes(i);
+
+      button.disabled = !unlocked;
+
+      if(state.completed.includes(i)){
+        button.textContent = "✅ Completada";
+      }else if(unlocked){
+        button.textContent = "🗺️ Explorar";
+      }else{
+        button.textContent = "🔒 Bloqueada";
+      }
+    });
+
+    for(let i=0;i<3;i++){
+      el("rpg-pet-"+i).textContent =
+        state.pets.includes(i) ? "🐉 ¡Conseguido!" : "🔒 Sin conseguir";
+    }
+
+    el("rpg-pet-message").textContent = state.pets.length
+      ? "Dragones conseguidos: "+state.pets.length+" de 3."
+      : "¡Completa misiones para conseguir tu primer dragón!";
+
+    const count = state.completed.length;
+    el("rpg-achievements").textContent = count===0
+      ? "Todavía no has completado ninguna misión."
+      : "🏆 Zonas completadas: "+count+" de 5. ¡Sigue avanzando!";
+
+    if(!state.active){
+      el("rpg-mission").innerHTML =
+        '<p>Elige una zona del mapa para comenzar una misión.</p>';
+    }
+  }
+
+  function showQuestion(){
+    const zone = zones[state.zone];
+    const q = zone.questions[state.question];
+
+    el("rpg-zone-message").textContent =
+      zone.icon+" "+zone.name+" — Pregunta "+(state.question+1)+" de "+zone.questions.length;
+
+    const box = el("rpg-mission");
+    box.replaceChildren();
+
+    const heading = document.createElement("h3");
+    heading.textContent = q.q;
+    box.appendChild(heading);
+
+    const options = document.createElement("div");
+    options.className = "rpg-grid";
+
+    state.choices.forEach(choice=>{
+      const button = document.createElement("button");
+      button.className = "rpg-choice";
+      button.textContent = choice;
+      button.type = "button";
+      button.addEventListener("click",()=>answer(choice));
+      options.appendChild(button);
+    });
+
+    box.appendChild(options);
+  }
+
+  function startZone(i){
+    if(i>0 && !state.completed.includes(i-1) && !state.completed.includes(i)){
+      el("rpg-zone-message").textContent =
+        "🔒 Completa primero la zona anterior para entrar aquí.";
+      return;
+    }
+
+    if(state.completed.includes(i)){
+      el("rpg-zone-message").textContent =
+        "✅ Ya has completado "+zones[i].name+". ¡Puedes volver a practicar!";
+      el("rpg-mission").innerHTML =
+        "<p>Esta zona ya está completada. Tu recompensa ya ha sido entregada.</p>";
+      state.active = false;
+      return;
+    }
+
+    state.zone = i;
+    state.question = 0;
+    state.score = 0;
+    state.active = true;
+    state.choices = zones[i].questions[0].a.slice().sort(()=>Math.random()-.5);
+    state.feedback = "";
+    showQuestion();
+  }
+
+  function answer(choice){
+    if(!state.active) return;
+
+    const zone = zones[state.zone];
+    const q = zone.questions[state.question];
+    const box = el("rpg-mission");
+
+    root.querySelectorAll(".rpg-choice").forEach(b=>b.disabled=true);
+
+    const feedback = document.createElement("p");
+    feedback.style.fontWeight = "bold";
+
+    if(choice===q.correct){
+      state.score++;
+      feedback.textContent = "✅ ¡Correcto! Has demostrado tu sabiduría.";
+    }else{
+      feedback.textContent = "❌ La respuesta correcta era: "+q.correct+".";
+    }
+
+    box.appendChild(feedback);
+
+    const next = document.createElement("button");
+    next.className = "rpg-button";
+    next.type = "button";
+    next.textContent = state.question===zone.questions.length-1
+      ? "🏆 Terminar misión"
+      : "➡️ Siguiente pregunta";
+
+    next.addEventListener("click",()=>{
+      state.question++;
+
+      if(state.question>=zone.questions.length){
+        finishZone();
+      }else{
+        state.choices = zone.questions[state.question].a
+          .slice().sort(()=>Math.random()-.5);
+        showQuestion();
+      }
+    });
+
+    box.appendChild(next);
+  }
+
+  function finishZone(){
+    const zone = zones[state.zone];
+    const box = el("rpg-mission");
+    box.replaceChildren();
+
+    state.active = false;
+
+    const heading = document.createElement("h3");
+    heading.textContent = "🏆 Misión completada";
+    box.appendChild(heading);
+
+    const score = document.createElement("p");
+    score.textContent = "Has acertado "+state.score+" de "+zone.questions.length+" preguntas.";
+    box.appendChild(score);
+
+    if(state.score>=2){
+      state.xp += zone.reward;
+      state.gems += zone.gems;
+      state.completed.push(state.zone);
+
+      let reward = "🎁 Recompensa: +"+zone.reward+" XP y +"+zone.gems+" cristales.";
+
+      if(!state.pets.includes(zone.pet)){
+        state.pets.push(zone.pet);
+        reward += " ¡Has conseguido un nuevo dragón!";
+      }
+
+      const rewardText = document.createElement("p");
+      rewardText.textContent = reward;
+      box.appendChild(rewardText);
+
+      const titleText = document.createElement("p");
+      titleText.textContent = "Tu título actual: "+title();
+      box.appendChild(titleText);
+    }else{
+      const retryText = document.createElement("p");
+      retryText.textContent =
+        "Necesitas al menos 2 aciertos para completar la misión. ¡Puedes intentarlo de nuevo!";
+      box.appendChild(retryText);
+    }
+
+    const retry = document.createElement("button");
+    retry.className = "rpg-button";
+    retry.type = "button";
+    retry.textContent = "🔄 Volver al mapa";
+    retry.addEventListener("click",()=>{
+      el("rpg-zone-message").textContent =
+        "Selecciona una zona para continuar tu aventura.";
+      render();
+    });
+    box.appendChild(retry);
+
+    save();
+    render();
+
+    if(state.completed.includes(4)){
+      const victory = document.createElement("p");
+      victory.textContent = "🐉 ¡Has conquistado Drakthar y derrotado al desafío definitivo!";
+      box.appendChild(victory);
+    }
+  }
+
+  root.querySelectorAll("[data-rpg-zone]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      startZone(Number(button.dataset.rpgZone));
+      render();
+      if(state.active) showQuestion();
+    });
+  });
+
+  el("rpg-reset").addEventListener("click",()=>{
+    const ok = window.confirm(
+      "¿Seguro que quieres reiniciar tu aventura? Perderás el progreso de este RPG."
+    );
+    if(!ok) return;
+
+    state = newState();
+    save();
+    render();
+    el("rpg-zone-message").textContent =
+      "Tu nueva aventura comienza ahora. ¡Buena suerte, héroe!";
+  });
+
+  render();
+})();
+</script>
+  
+<!-- ===== EXPANSIÓN LEGENDARIA DE DRAKTHAR ===== -->
+<section id="expansion-drakthar">
+<style>
+#expansion-drakthar{max-width:950px;margin:40px auto;padding:22px;background:#100910;color:#f5e6c8;border:2px solid #c99b3b;border-radius:18px;font-family:Arial,sans-serif}
+#expansion-drakthar *{box-sizing:border-box}
+#expansion-drakthar h2,#expansion-drakthar h3{color:#e8b94e}
+#expansion-drakthar .exp-panel{padding:16px;margin:14px 0;background:#1c111c;border:1px solid #70452c;border-radius:12px}
+#expansion-drakthar .exp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+#expansion-drakthar .exp-card{padding:14px;text-align:center;background:#251725;border:1px solid #80562e;border-radius:12px}
+#expansion-drakthar button{padding:10px 13px;margin:5px;background:linear-gradient(135deg,#6f1724,#a52a2a);color:#ffe6a6;border:1px solid #c99b3b;border-radius:8px;cursor:pointer;font-weight:bold}
+#expansion-drakthar button:disabled{opacity:.5;cursor:not-allowed}
+#expansion-drakthar input{max-width:100%;padding:10px;background:#100910;color:#f5e6c8;border:1px solid #c99b3b;border-radius:8px}
+#expansion-drakthar .exp-map{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;text-align:center}
+#expansion-drakthar .exp-land{padding:15px 5px;background:linear-gradient(145deg,#24351e,#172016);border:1px solid #71854c;border-radius:10px}
+#expansion-drakthar .exp-status{padding:12px;background:#080609;border-radius:8px;line-height:1.6}
+</style>
+
+<header style="text-align:center">
+  <div style="font-size:60px">🐉 ⚔️ 🏰</div>
+  <h2 style="font-size:29px">LA EXPANSIÓN LEGENDARIA</h2>
+  <p>Personaliza tu dragón, derrota monstruos y conquista Drakthar.</p>
+</header>
+
+<!-- PERFIL -->
+<div class="exp-panel">
+  <h3>👑 Perfil del aventurero</h3>
+  <p>Dragón: <strong id="exp-name">Drakito</strong></p>
+  <p>Nivel del dragón: <strong id="exp-level">1</strong></p>
+  <p>❤️ Vida: <strong id="exp-health">100</strong>/100</p>
+  <p>💎 Cristales: <strong id="exp-gems">50</strong></p>
+  <label for="exp-name-input">Nombre de tu dragón:</label><br>
+  <input id="exp-name-input" maxlength="20" placeholder="Escribe un nombre">
+  <button id="exp-name-save">Guardar nombre</button>
+  <p id="exp-profile-message" class="exp-status" role="status">¡Tu aventura comienza!</p>
+</div>
+
+<!-- MAPA -->
+<div class="exp-panel">
+  <h3>🗺️ Mapa de las tierras antiguas</h3>
+  <p>Elige tu próximo destino.</p>
+  <div class="exp-map">
+    <div class="exp-land">🌲<br><strong>Bosque de Vareth</strong></div>
+    <div class="exp-land">🌋<br><strong>Volcán de Kraghor</strong></div>
+    <div class="exp-land">🏰<br><strong>Reino de Nivarak</strong></div>
+    <div class="exp-land">⚔️<br><strong>Castillo de Mordrak</strong></div>
+    <div class="exp-land">🐲<br><strong>Guarida de Dravok</strong></div>
+  </div>
+  <p style="font-size:12px;color:#c4ad8d">Mapa ilustrativo: las zonas son destinos temáticos de esta expansión.</p>
+</div>
+
+<!-- COMBATE -->
+<div class="exp-panel">
+  <h3>⚔️ Arena de combate</h3>
+  <div style="text-align:center;font-size:54px" id="exp-monster-art">👹</div>
+  <h3 id="exp-monster-name" style="text-align:center">Goblin de las sombras</h3>
+  <p style="text-align:center">❤️ Vida del monstruo: <strong id="exp-monster-health">60</strong></p>
+  <div class="exp-status" id="exp-combat-message" role="status">
+    ¡Un monstruo te desafía! Pulsa atacar para comenzar.
+  </div>
+  <div style="text-align:center">
+    <button id="exp-attack">🔥 Atacar</button>
+    <button id="exp-heal">🧪 Curar (10 cristales)</button>
+    <button id="exp-next-monster">➡️ Nuevo monstruo</button>
+  </div>
+</div>
+
+<!-- TIENDA -->
+<div class="exp-panel">
+  <h3>🛒 Tienda legendaria</h3>
+  <p>Compra objetos con tus cristales. Cada objeto solo se puede comprar una vez.</p>
+  <div class="exp-grid">
+    <div class="exp-card">
+      <div style="font-size:40px">🗡️</div>
+      <h3>Espada de Kraghor</h3>
+      <p>+10 de daño por ataque.</p>
+      <strong>30 💎</strong><br>
+      <button data-exp-item="sword">Comprar</button>
+    </div>
+    <div class="exp-card">
+      <div style="font-size:40px">🛡️</div>
+      <h3>Armadura de Mordrak</h3>
+      <p>Reduce el daño recibido.</p>
+      <strong>25 💎</strong><br>
+      <button data-exp-item="armor">Comprar</button>
+    </div>
+    <div class="exp-card">
+      <div style="font-size:40px">🥚</div>
+      <h3>Huevo de dragón</h3>
+      <p>Sube un nivel a tu dragón.</p>
+      <strong>40 💎</strong><br>
+      <button data-exp-item="egg">Comprar</button>
+    </div>
+  </div>
+  <p id="exp-shop-message" class="exp-status" role="status">¡Bienvenido a la tienda!</p>
+</div>
+
+<!-- COLECCIÓN -->
+<div class="exp-panel">
+  <h3>🐲 Colección de compañeros</h3>
+  <div class="exp-grid">
+    <div class="exp-card">
+      <div style="font-size:45px">🐣</div>
+      <strong>Drakito</strong>
+      <p>Dragón de fuego.</p>
+      <button data-exp-pet="0">Elegir</button>
+    </div>
+    <div class="exp-card">
+      <div style="font-size:45px">🐲</div>
+      <strong>Sombraveloz</strong>
+      <p>Dragón de las sombras.</p>
+      <button data-exp-pet="1">Elegir · 60 💎</button>
+    </div>
+    <div class="exp-card">
+      <div style="font-size:45px">🔥</div>
+      <strong>Dravok Joven</strong>
+      <p>Dragón legendario.</p>
+      <button data-exp-pet="2">Elegir · 100 💎</button>
+    </div>
+  </div>
+  <p id="exp-pet-message" class="exp-status" role="status">Tu compañero te espera.</p>
+</div>
+
+</section>
+
+<script>
+(function(){
+  const root=document.getElementById("expansion-drakthar");
+  if(!root || root.dataset.started==="yes") return;
+  root.dataset.started="yes";
+
+  const KEY="drakthar_expansion_v1";
+  const monsters=[
+    {name:"Goblin de las sombras",art:"👹",health:60,damage:12,reward:15},
+    {name:"Lobo de ceniza",art:"🐺",health:80,damage:16,reward:20},
+    {name:"Gólem de Kraghor",art:"🗿",health:110,damage:20,reward:30},
+    {name:"Dragón oscuro",art:"🐲",health:150,damage:25,reward:40}
+  ];
+
+  function fresh(){
+    return {
+      name:"Drakito",level:1,health:100,gems:50,
+      pet:0,owned:[0],items:[],
+      monster:0,monsterHealth:60,won:0
+    };
+  }
+
+  function load(){
+    try{
+      const s=JSON.parse(localStorage.getItem(KEY));
+      if(!s || typeof s!=="object") return fresh();
+      const d=fresh();
+      d.name=typeof s.name==="string"?s.name.slice(0,20):d.name;
+      d.level=Math.max(1,Math.min(999,Number(s.level)||1));
+      d.health=Math.max(0,Math.min(100,Number(s.health)||0));
+      d.gems=Math.max(0,Number(s.gems)||0);
+      d.pet=[0,1,2].includes(s.pet)?s.pet:0;
+      d.owned=Array.isArray(s.owned)?[...new Set(s.owned.filter(n=>[0,1,2].includes(n)))]:[0];
+      if(!d.owned.includes(0)) d.owned.unshift(0);
+      if(!d.owned.includes(d.pet)) d.pet=0;
+      d.items=Array.isArray(s.items)?[...new Set(s.items.filter(n=>["sword","armor","egg"].includes(n)))]:[];
+      d.monster=Math.max(0,Math.min(monsters.length-1,Number(s.monster)||0));
+      d.monsterHealth=Math.max(0,Math.min(monsters[d.monster].health,
+        Number.isFinite(Number(s.monsterHealth))?Number(s.monsterHealth):monsters[d.monster].health));
+      d.won=Math.max(0,Number(s.won)||0);
+      return d;
+    }catch(e){return fresh();}
+  }
+
+  let s=load();
+  let busy=false;
+  const $=id=>root.querySelector("#"+id);
+  const pets=["Drakito","Sombraveloz","Dravok Joven"];
+
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}
+  }
+
+  function say(id,message){
+    $(id).textContent=message;
+  }
+
+  function render(){
+    $("exp-name").textContent=s.name;
+    $("exp-level").textContent=s.level;
+    $("exp-health").textContent=s.health;
+    $("exp-gems").textContent=s.gems;
+    $("exp-name-input").value=s.name;
+
+    const m=monsters[s.monster];
+    $("exp-monster-name").textContent=m.name;
+    $("exp-monster-art").textContent=m.art;
+    $("exp-monster-health").textContent=s.monsterHealth;
+
+    root.querySelectorAll("[data-exp-item]").forEach(b=>{
+      const id=b.dataset.expItem;
+      const bought=s.items.includes(id);
+      b.disabled=bought;
+      if(bought)b.textContent="✅ Comprado";
+    });
+
+    root.querySelectorAll("[data-exp-pet]").forEach(b=>{
+      const id=Number(b.dataset.expPet);
+      b.disabled=!s.owned.includes(id) && s.gems < (id===1?60:100);
+      b.textContent=s.pet===id?"✅ Compañero elegido":
+        s.owned.includes(id)?"Elegir": "Conseguir · "+(id===1?60:100)+" 💎";
+    });
+
+    $("exp-attack").disabled=busy || s.health<=0 || s.monsterHealth<=0;
+    $("exp-heal").disabled=busy || s.health<=0 || s.gems<10 || s.health>=100;
+  }
+
+  $("exp-name-save").addEventListener("click",()=>{
+    const value=$("exp-name-input").value.trim();
+    if(!value){
+      say("exp-profile-message","Escribe un nombre antes de guardarlo.");
+      return;
+    }
+    s.name=value.slice(0,20);
+    save();render();
+    say("exp-profile-message","🐉 ¡Tu dragón ahora se llama "+s.name+"!");
+  });
+
+  $("exp-attack").addEventListener("click",()=>{
+    if(busy || s.health<=0 || s.monsterHealth<=0)return;
+    busy=true;
+    const m=monsters[s.monster];
+    const damage=15+(s.items.includes("sword")?10:0)+(s.level-1)*2;
+    s.monsterHealth=Math.max(0,s.monsterHealth-damage);
+
+    if(s.monsterHealth===0){
+      s.gems+=m.reward;
+      s.won++;
+      s.level++;
+      s.health=Math.min(100,s.health+20);
+      say("exp-combat-message","🏆 ¡Victoria! Has ganado "+m.reward+
+        " cristales y subido un nivel. Tu dragón recupera algo de vida.");
+      busy=false;save();render();return;
+    }
+
+    const armor=s.items.includes("armor")?Math.ceil(m.damage/2):m.damage;
+    s.health=Math.max(0,s.health-armor);
+
+    if(s.health===0){
+      say("exp-combat-message","💤 Tu dragón se ha quedado sin vida. Pulsa «Curar» no es posible ahora: usa un nuevo monstruo para recuperar 30 de vida.");
+    }else{
+      say("exp-combat-message","🔥 ¡Has causado "+damage+" de daño! El monstruo te ha quitado "+armor+" de vida.");
+    }
+    busy=false;save();render();
+  });
+
+  $("exp-heal").addEventListener("click",()=>{
+    if(s.gems<10 || s.health>=100)return;
+    s.gems-=10;
+    s.health=Math.min(100,s.health+30);
+    save();render();
+    say("exp-combat-message","🧪 ¡Curación realizada! Has recuperado 30 de vida.");
+  });
+
+  $("exp-next-monster").addEventListener("click",()=>{
+    s.monster=(s.monster+1)%monsters.length;
+    s.monsterHealth=monsters[s.monster].health;
+    if(s.health===0)s.health=30;
+    save();render();
+    say("exp-combat-message","⚔️ Aparece "+monsters[s.monster].name+" ¡Prepárate!");
+  });
+
+  root.querySelectorAll("[data-exp-item]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id=b.dataset.expItem;
+      if(s.items.includes(id))return;
+      const item={
+        sword:{cost:30,name:"Espada de Kraghor"},
+        armor:{cost:25,name:"Armadura de Mordrak"},
+        egg:{cost:40,name:"Huevo de dragón"}
+      }[id];
+      if(s.gems<item.cost){
+        say("exp-shop-message","💎 No tienes suficientes cristales.");
+        return;
+      }
+      s.gems-=item.cost;
+      s.items.push(id);
+      if(id==="egg")s.level++;
+      save();render();
+      say("exp-shop-message","🎉 ¡Has comprado "+item.name+"!");
+    });
+  });
+
+  root.querySelectorAll("[data-exp-pet]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id=Number(b.dataset.expPet);
+      if(!s.owned.includes(id)){
+        const cost=id===1?60:100;
+        if(s.gems<cost){
+          say("exp-pet-message","💎 Necesitas "+cost+" cristales para conseguirlo.");
+          return;
+        }
+        s.gems-=cost;
+        s.owned.push(id);
+      }
+      s.pet=id;
+      s.name=pets[id];
+      save();render();
+      say("exp-pet-message","🐉 ¡"+pets[id]+" es ahora tu compañero!");
+    });
+  });
+
+  render();
+})();
+</script>
+  
+<!-- ===== DRAKTHAR: REINO, EXPLORACIÓN Y JEFE FINAL ===== -->
+<section id="drakthar-ultimate" style="max-width:950px;margin:40px auto;padding:24px;background:#100910;color:#f5e6c8;border:2px solid #c99b3b;border-radius:18px;font-family:Arial,sans-serif">
+<style>
+#drakthar-ultimate *{box-sizing:border-box}
+#drakthar-ultimate h2,#drakthar-ultimate h3{color:#e8b94e}
+#drakthar-ultimate .du-panel{background:#1c111c;border:1px solid #70452c;border-radius:12px;padding:16px;margin:14px 0}
+#drakthar-ultimate .du-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+#drakthar-ultimate .du-card{background:#251725;border:1px solid #80562e;border-radius:10px;padding:14px;text-align:center}
+#drakthar-ultimate button{background:linear-gradient(135deg,#6f1724,#a52a2a);color:#ffe6a6;border:1px solid #c99b3b;border-radius:8px;padding:10px 13px;margin:4px;cursor:pointer;font-weight:bold}
+#drakthar-ultimate button:disabled{opacity:.45;cursor:not-allowed}
+#drakthar-ultimate .du-status{padding:12px;background:#080609;border-radius:8px;line-height:1.6}
+#drakthar-ultimate .du-bar{height:16px;background:#39202a;border-radius:20px;overflow:hidden}
+#drakthar-ultimate .du-fill{height:100%;width:100%;background:linear-gradient(90deg,#8b202e,#e8b94e);transition:width .3s}
+</style>
+
+<header style="text-align:center">
+  <div style="font-size:60px">🏰 ⚔️ 🐉</div>
+  <h2 style="font-size:29px">DRAKTHAR: EL REINO ETERNO</h2>
+  <p>Construye tu reino, explora tierras desconocidas y desafía al dragón ancestral.</p>
+</header>
+
+<div class="du-panel">
+  <h3>💰 Tu tesoro</h3>
+  <div class="du-grid">
+    <div class="du-card">🪙 Oro<br><strong id="du-gold">100</strong></div>
+    <div class="du-card">💎 Cristales<br><strong id="du-gems">20</strong></div>
+    <div class="du-card">🏰 Nivel del castillo<br><strong id="du-castle-level">1</strong></div>
+    <div class="du-card">⚔️ Arma<br><strong id="du-weapon">Espada básica</strong></div>
+  </div>
+</div>
+
+<div class="du-panel">
+  <h3>🏰 Tu castillo</h3>
+  <div style="text-align:center;font-size:75px" id="du-castle-art">🏰</div>
+  <p id="du-castle-description">Tu pequeño reino acaba de nacer.</p>
+  <button id="du-upgrade-castle">🧱 Mejorar castillo · 50 oro</button>
+  <button id="du-collect-gold">🪙 Recoger 20 oro</button>
+</div>
+
+<div class="du-panel">
+  <h3>🌍 Mundo por explorar</h3>
+  <div class="du-grid">
+    <div class="du-card">
+      <div style="font-size:42px">🌲</div>
+      <h3>Bosque de Vareth</h3>
+      <p>Encuentra monedas entre los árboles.</p>
+      <button data-du-region="0">Explorar</button>
+    </div>
+    <div class="du-card">
+      <div style="font-size:42px">🌋</div>
+      <h3>Volcán de Kraghor</h3>
+      <p>Busca cristales entre las rocas.</p>
+      <button data-du-region="1">Explorar</button>
+    </div>
+    <div class="du-card">
+      <div style="font-size:42px">🏚️</div>
+      <h3>Ruinas de Nivarak</h3>
+      <p>Descubre tesoros antiguos.</p>
+      <button data-du-region="2">Explorar</button>
+    </div>
+    <div class="du-card">
+      <div style="font-size:42px">🐉</div>
+      <h3>Guarida de Dravok</h3>
+      <p>La prueba definitiva.</p>
+      <button id="du-go-boss">Entrar en la guarida</button>
+    </div>
+  </div>
+  <p id="du-explore-message" class="du-status" role="status">¡El mundo te espera!</p>
+</div>
+
+<div class="du-panel">
+  <h3>⚒️ Herrería legendaria</h3>
+  <p>Fabrica equipamiento para mejorar tus ataques.</p>
+  <div class="du-grid">
+    <div class="du-card">
+      <div style="font-size:40px">🗡️</div>
+      <h3>Espada de Kraghor</h3>
+      <p>Aumenta tu daño.</p>
+      <strong>60 oro</strong><br>
+      <button data-du-craft="sword">Fabricar</button>
+    </div>
+    <div class="du-card">
+      <div style="font-size:40px">🛡️</div>
+      <h3>Escudo de Mordrak</h3>
+      <p>Reduce el daño recibido.</p>
+      <strong>45 oro</strong><br>
+      <button data-du-craft="shield">Fabricar</button>
+    </div>
+    <div class="du-card">
+      <div style="font-size:40px">💎</div>
+      <h3>Amuleto arcano</h3>
+      <p>Aumenta tus recompensas de cristales.</p>
+      <strong>15 cristales</strong><br>
+      <button data-du-craft="amulet">Fabricar</button>
+    </div>
+  </div>
+  <p id="du-craft-message" class="du-status" role="status">Tu herrería está lista.</p>
+</div>
+
+<div class="du-panel" id="du-boss-panel">
+  <h3>🐉 JEFE FINAL: DRAVOK</h3>
+  <div id="du-boss-art" style="font-size:75px;text-align:center">🐲🔥</div>
+  <p style="text-align:center">Fase: <strong id="du-boss-phase">1</strong> / 3</p>
+  <p>Vida de Dravok: <strong id="du-boss-hp">100</strong></p>
+  <div class="du-bar"><div id="du-boss-bar" class="du-fill"></div></div>
+  <p>Tu vida: <strong id="du-player-hp">100</strong> / 100</p>
+  <div class="du-bar"><div id="du-player-bar" class="du-fill" style="background:linear-gradient(90deg,#247b48,#81d66b)"></div></div>
+  <p id="du-boss-message" class="du-status" role="status">Pulsa «Comenzar combate» cuando estés preparado.</p>
+  <div style="text-align:center">
+    <button id="du-start-boss">⚔️ Comenzar combate</button>
+    <button id="du-attack-boss" disabled>🔥 Atacar</button>
+    <button id="du-special-boss" disabled>✨ Ataque especial · 5 cristales</button>
+    <button id="du-heal-boss" disabled>🧪 Curar · 20 oro</button>
+  </div>
+</div>
+
+</section>
+
+<script>
+(function(){
+  const root=document.getElementById("drakthar-ultimate");
+  if(!root||root.dataset.ready==="yes")return;
+  root.dataset.ready="yes";
+
+  const KEY="drakthar_ultimate_save_v1";
+  const fresh=()=>({
+    gold:100,gems:20,castle:1,weapon:0,shield:false,amulet:false,
+    regions:[],collected:false,playerHp:100,bossHp:100,
+    phase:1,battle:false,won:false
+  });
+
+  function load(){
+    try{
+      const x=JSON.parse(localStorage.getItem(KEY));
+      if(!x||typeof x!=="object")return fresh();
+      const s=fresh();
+      s.gold=Math.max(0,Number(x.gold)||0);
+      s.gems=Math.max(0,Number(x.gems)||0);
+      s.castle=Math.max(1,Math.min(10,Number(x.castle)||1));
+      s.weapon=x.weapon===1?1:0;
+      s.shield=x.shield===true;
+      s.amulet=x.amulet===true;
+      s.regions=Array.isArray(x.regions)?[...new Set(x.regions.filter(n=>[0,1,2].includes(n)))]:[];
+      s.collected=x.collected===true;
+      s.playerHp=Math.max(0,Math.min(100,Number(x.playerHp)||0));
+      s.bossHp=Math.max(0,Math.min(100,Number(x.bossHp)||100));
+      s.phase=Math.max(1,Math.min(3,Number(x.phase)||1));
+      s.battle=false;
+      s.won=x.won===true;
+      if(s.won)s.bossHp=0;
+      return s;
+    }catch(e){return fresh();}
+  }
+
+  let s=load();
+  const $=id=>root.querySelector("#"+id);
+  const regions=[
+    {name:"Bosque de Vareth",gold:25,gems:0},
+    {name:"Volcán de Kraghor",gold:15,gems:5},
+    {name:"Ruinas de Nivarak",gold:40,gems:2}
+  ];
+
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(s));}catch(e){}
+  }
+  function msg(id,text){$(id).textContent=text;}
+  function sayBoss(text){msg("du-boss-message",text);}
+
+  function render(){
+    $("du-gold").textContent=s.gold;
+    $("du-gems").textContent=s.gems;
+    $("du-castle-level").textContent=s.castle;
+    $("du-weapon").textContent=s.weapon?"Espada de Kraghor":"Espada básica";
+    $("du-castle-art").textContent=s.castle>=5?"🏯":s.castle>=3?"🏰✨":"🏰";
+    $("du-castle-description").textContent=
+      "Nivel "+s.castle+" · "+(s.castle>=5?"Una fortaleza legendaria.":s.castle>=3?"Tu castillo crece con fuerza.":"Tu reino está comenzando.");
+    $("du-upgrade-castle").disabled=s.castle>=10||s.gold<50;
+    $("du-collect-gold").disabled=s.collected;
+    $("du-collect-gold").textContent=s.collected?"✅ Oro recogido":"🪙 Recoger 20 oro";
+    root.querySelectorAll("[data-du-region]").forEach(b=>{
+      const i=Number(b.dataset.duRegion);
+      b.disabled=s.regions.includes(i);
+      b.textContent=s.regions.includes(i)?"✅ Exploración completada":"Explorar";
+    });
+    root.querySelectorAll("[data-du-craft]").forEach(b=>{
+      const id=b.dataset.duCraft;
+      const owned=id==="sword"?s.weapon===1:id==="shield"?s.shield:s.amulet;
+      b.disabled=owned;
+      if(owned)b.textContent="✅ Fabricado";
+    });
+    $("du-boss-hp").textContent=s.bossHp;
+    $("du-boss-phase").textContent=s.phase;
+    $("du-player-hp").textContent=s.playerHp;
+    $("du-boss-bar").style.width=s.bossHp+"%";
+    $("du-player-bar").style.width=s.playerHp+"%";
+    $("du-boss-art").textContent=s.phase===3?"🐉🔥💀":s.phase===2?"🐲🔥":"🐲";
+    $("du-start-boss").disabled=s.won;
+    $("du-attack-boss").disabled=!s.battle||s.won||s.playerHp<=0;
+    $("du-special-boss").disabled=!s.battle||s.won||s.playerHp<=0||s.gems<5;
+    $("du-heal-boss").disabled=!s.battle||s.won||s.playerHp<=0||s.gold<20||s.playerHp>=100;
+  }
+
+  $("du-upgrade-castle").addEventListener("click",()=>{
+    if(s.castle>=10||s.gold<50)return;
+    s.gold-=50;s.castle++;
+    save();render();
+    msg("du-explore-message","🏰 ¡Castillo mejorado al nivel "+s.castle+"!");
+  });
+
+  $("du-collect-gold").addEventListener("click",()=>{
+    if(s.collected)return;
+    s.gold+=20;s.collected=true;
+    save();render();
+    msg("du-explore-message","🪙 ¡Has recogido 20 monedas de oro!");
+  });
+
+  root.querySelectorAll("[data-du-region]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const i=Number(b.dataset.duRegion);
+      if(s.regions.includes(i))return;
+      s.regions.push(i);
+      const r=regions[i];
+      s.gold+=r.gold;
+      s.gems+=r.gems+(s.amulet?2:0);
+      save();render();
+      msg("du-explore-message","🎁 "+r.name+": encontraste "+r.gold+" de oro y "+(r.gems+(s.amulet?2:0))+" cristales.");
+    });
+  });
+
+  root.querySelectorAll("[data-du-craft]").forEach(b=>{
+    b.addEventListener("click",()=>{
+      const id=b.dataset.duCraft;
+      if(id==="sword"){
+        if(s.weapon||s.gold<60)return;
+        s.gold-=60;s.weapon=1;
+        msg("du-craft-message","🗡️ ¡Espada de Kraghor fabricada! Ahora haces más daño.");
+      }else if(id==="shield"){
+        if(s.shield||s.gold<45)return;
+        s.gold-=45;s.shield=true;
+        msg("du-craft-message","🛡️ ¡Escudo de Mordrak fabricado! Recibirás menos daño.");
+      }else{
+        if(s.amulet||s.gems<15)return;
+        s.gems-=15;s.amulet=true;
+        msg("du-craft-message","💎 ¡Amuleto arcano fabricado! Encontrarás cristales adicionales.");
+      }
+      save();render();
+    });
+  });
+
+  function bossEnd(){
+    s.battle=false;
+    if(s.bossHp<=0){
+      s.bossHp=0;s.won=true;
+      s.gold+=150;s.gems+=25;
+      save();render();
+      sayBoss("👑 ¡VICTORIA LEGENDARIA! Has derrotado a Dravok y ganado 150 de oro y 25 cristales.");
+    }else if(s.playerHp<=0){
+      s.playerHp=0;
+      save();render();
+      sayBoss("💫 Has perdido este combate. Pulsa «Comenzar combate» para volver a intentarlo.");
+    }
+  }
+
+  $("du-start-boss").addEventListener("click",()=>{
+    if(s.won)return;
+    if(s.playerHp<=0)s.playerHp=100;
+    if(s.bossHp<=0)s.bossHp=100;
+    s.phase=s.bossHp<=34?3:s.bossHp<=67?2:1;
+    s.battle=true;
+    save();render();
+    sayBoss("🐉 ¡Dravok ruge! Ataca con cuidado. El dragón se vuelve más peligroso en cada fase.");
+  });
+
+  function playerAttack(power){
+    if(!s.battle||s.won||s.playerHp<=0)return;
+    const damage=power+(s.weapon?15:0)+(s.castle-1)*2;
+    s.bossHp=Math.max(0,s.bossHp-damage);
+
+    if(s.bossHp===0){
+      bossEnd();return;
+    }
+
+    const newPhase=s.bossHp<=34?3:s.bossHp<=67?2:1;
+    if(newPhase>s.phase){
+      s.phase=newPhase;
+      sayBoss("🔥 ¡DRAVOK ENTRA EN LA FASE "+s.phase+"! Sus ataques son más fuertes.");
+    }
+
+    const baseDamage=s.phase===3?28:s.phase===2?20:12;
+    const damageTaken=Math.max(4,baseDamage-(s.shield?8:0));
+    s.playerHp=Math.max(0,s.playerHp-damageTaken);
+
+    save();render();
+    if(s.playerHp===0){
+      bossEnd();
+    }else{
+      sayBoss("⚔️ Hiciste "+damage+" de daño. Dravok te golpeó y te quitó "+damageTaken+" de vida.");
+    }
+  }
+
+  $("du-attack-boss").addEventListener("click",()=>playerAttack(15));
+  $("du-special-boss").addEventListener("click",()=>{
+    if(s.gems<5||!s.battle||s.won)return;
+    s.gems-=5;
+    save();
+    playerAttack(30);
+  });
+
+  $("du-heal-boss").addEventListener("click",()=>{
+    if(s.gold<20||!s.battle||s.won||s.playerHp>=100)return;
+    s.gold-=20;
+    s.playerHp=Math.min(100,s.playerHp+35);
+    save();render();
+    sayBoss("🧪 ¡Has recuperado hasta 35 puntos de vida!");
+  });
+
+  $("du-go-boss").addEventListener("click",()=>{
+    $("du-boss-panel").scrollIntoView({behavior:"smooth",block:"start"});
+    sayBoss("🐉 Has entrado en la guarida. ¡Pulsa «Comenzar combate» cuando estés listo!");
+  });
+
+  render();
+})();
+</script>
+
+</body></html>
